@@ -1,0 +1,78 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Lachaise Assignment
+% LaTeX Template
+% Version 1.0 (26/6/2018)
+% This template originates from:
+% http://www.LaTeXTemplates.com
+%
+% Template Authors:
+% Marion Lachaise & François Févotte
+% Vel (vel@LaTeXTemplates.com)
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+% 
+% Author: Marco Cofano (marco.cofano@luxquanta.com) - LuxQuanta Technologies, S.L.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass{book}
+
+\input{structure.tex} % Include the file specifying the document structure and custom commands
+
+%----------------------------------------------------------------------------------------
+%	ASSIGNMENT INFORMATION
+%----------------------------------------------------------------------------------------
+
+\title{Error Correction and Linear Codes Lectures} % Title of the assignment
+
+\author{Marco Cofano\\ \texttt{marco.cofano@luxquanta.com}} % Author name and email address
+
+\date{\today}
+
+%----------------------------------------------------------------------------------------
+%----------------------------------------------------------------------------------------
+%	RENEW commands
+%----------------------------------------------------------------------------------------
+
+\renewcommand{\chaptername}{Lecture}
+\usepackage{amsthm}
+\newtheorem{theorem}{Theorem}[section]
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+
+\usetikzlibrary{shapes,arrows}
+
+\tikzstyle{block} = [draw, fill=white, rectangle, 
+minimum height=3em, minimum width=6em]
+\tikzstyle{socket} = [draw, fill=white, rectangle, 
+minimum height=0.5em, minimum width=0.5em]
+\tikzstyle{sum} = [draw, fill=white, circle, node distance=1cm]
+\tikzstyle{input} = [coordinate]
+\tikzstyle{output} = [coordinate]
+\tikzstyle{pinstyle} = [pin edge={to-,thin,black}]
+
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+
+\begin{document}
+
+\maketitle % Print the title
+\tableofcontents
+\include{introduction}
+\include{lecture0}
+\include{lecture1}
+\include{lecture2}
+\include{lecture3}
+
+\bibliographystyle{plain}
+\bibliography{biblio}
+
+\end{document}
