@@ -1,0 +1,84 @@
+%----------------------------------------------------------------------------------------
+%	INTRODUCTION
+%----------------------------------------------------------------------------------------
+
+\chapter{Introduction}
+
+\section{The communication problem} % Unnumbered section
+
+If we want to communicate between a source and a receiver we need to make sure to understand the possible messages that we want to send, how to sensibly choose the format in which we translate the message into so that it can be sent through and if that we are not using the resources inefficiently. Also, we need to make sure that during the communication the message is not lost or corrupted. Finally, that we can recover the original message, inverting whatever procedure the sender has put in place to ensure all of the above requirements are met.
+
+The theory of information deals with the very definition of these problems and the implementations of methods to achieve communication. It was founded by Claude Shannon in 1948. In his seminal outstanding paper \cite{shannon}, he defined in mathematical terms the two main areas of concerns of information theory:
+\begin{itemize}
+	\item what is the most efficient way of sending a message?
+	\item when and how can we communicate reliably between a source and a receiver?
+\end{itemize}
+and gives an exact understanding of what information means.
+
+In doing so, he also proved the two fundamental theorems that answer these two questions and show the fundamental limits of communication.  To do so, he employed the laws of probability that had been developed in the 100 of years before and in so doing changed the world for good.
+
+This is fundamentally a mathematical and logical theory. It sets the limits and constrained of what is possible and what is not. It gives an indication of what to do and how to implement a scheme to achieve the goals of efficient and reliable  communication. Ultimately, finding ways, or algorithms, or schemes, to implement this communication is outside the scope of that paper. It was a legacy or better a hurdle that he left and endures up to these days.
+
+
+We will, in these lectures follow the development of information theory along two main axis. One one hand, the two problems of efficiency and reliability. On the other, the mathematical and theoretical aspects against the implementation complexities.
+
+Let's summarize the main areas of concern, the conceptual and historical development of information theory in the following table:
+
+\begin{center}
+	\begin{tabular}{  c | c | c } 
+		 		& Efficiency - Source Coding & Reliability - channel coding \\ 
+		 		\hline
+		Theory & Compression & Capacity and Mutual info \\
+		 	   & Kraft - Mecmillan  inequalities & Channel  coding theorem \\ 
+ 	           & Source coding Theorem & \\ Error correction codes \\
+ 	           \hline
+		Implementation & Shannon-fano codes & Humming \\ 
+		               & Huffman codes & Reed - Solomon \\	
+		               &  & Turbo \\
+		               &  & LDPC \\		
+\end{tabular}
+\end{center}
+
+\section{The source - channel model}
+
+All in all, the transmission of a message over a communication line (the channel) with a known noise pattern is described by the following figure:   
+
+\begin{figure}[h]
+	\begin{center}
+	\begin{tikzpicture}[auto, node distance=2cm]
+	
+	\node [block] (source) {Source};
+	\node [block, below of=source] (source encoder) {Source Encoder};
+	\node [block, below of=source encoder] (channel encoder) {Channel Encoder};
+	\node [block, right of=channel encoder, node distance=5cm] (channel) {Channel};
+	\node [block, right of=channel, node distance=5cm] (channel decoder) {Channel Decoder};
+	\node [block, above of=channel decoder] (source decoder) {Source Decoder};
+	\node [block, above of=source decoder] (receiver) {Receiver};
+	
+	\draw [->] (source) -- node[name=u] {$a$} (source encoder);
+	\draw [->] (source encoder) -- node[name=a] {$b$} (channel encoder);
+	\draw [->] (channel encoder) -- node[name=b] {$c$} (channel);
+	\draw [->] (channel) -- node[name=c] {$d$} (channel decoder);
+	\draw [->] (channel decoder) -- node[name=d] {$e$} (source decoder);
+	\draw [->] (source decoder) -- node[name=e] {$f$} (receiver);
+	
+	
+	\end{tikzpicture}
+	\end{center}
+	\caption{The Communication flow}
+	\label{fig:commflow}
+\end{figure}
+
+The source needs to send the message $a$, which is represented by the encoder into a minimum number of entities, b each of which need to be sent by some physical system. The message so prepared is sent to an encoder which adds some redundancy and forms $c$, in order to protect the message from the noise in the channel. The encoded message plus the noise, $d$ arrives at the decoder which tries to reconstruct the original encoded message. When the reconstructed message $e$ is obtained, it is sent through the inverse procedure of the first step recovering the original message $f=a$.   
+
+
+In our first lecture we will concentrate on the first and last steps, ignoring the fact that the channel could, in principle add noise.
+
+Let us refrain the main the questions we are going to answer:
+\begin{itemize}
+	\item What is information?
+	\item How can we represent how much of it there is?
+	\item How can we represent the messages we want to send?
+	\item What is the optimal and most efficient representation?
+\end{itemize}  
+
