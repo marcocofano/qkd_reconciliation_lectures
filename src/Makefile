@@ -11,7 +11,7 @@ report:
 	pdflatex $(DOCNAME).tex
 	bibtex $(DOCNAME).aux
 	pdflatex $(DOCNAME).tex
-	pdflatex $(DOCNAME).tex
+	pdflatex -synctex=1 $(DOCNAME).tex
 
 view: report
 	open $(DOCNAME).pdf

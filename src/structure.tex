@@ -12,7 +12,7 @@
 %
 % License:
 % CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
-% 
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %----------------------------------------------------------------------------------------
@@ -20,7 +20,8 @@
 %----------------------------------------------------------------------------------------
 
 \usepackage{amsmath,amsfonts,stmaryrd,amssymb} % Math packages
-
+\usepackage{bbold}
+\usepackage{mathtools}
 \usepackage{enumerate} % Custom item numbers for enumerations
 
 \usepackage[ruled]{algorithm2e} % Algorithms
@@ -70,7 +71,7 @@
 % \begin{commandline}
 %	\begin{verbatim}
 %		$ ls
-%		
+%
 %		Applications	Desktop	...
 %	\end{verbatim}
 % \end{commandline}
@@ -248,3 +249,15 @@
 	}{
 	\end{mdframed}
 }
+
+
+% Custom math operators
+\DeclareMathOperator{\Tr}{Tr}
+
+
+% Quantum Mechanical stuff
+\DeclarePairedDelimiter\bra{\langle}{\rvert}
+\DeclarePairedDelimiter\ket{\lvert}{\rangle}
+\DeclarePairedDelimiterX\braket[2]{\langle}{\rangle}{#1\,\delimsize\vert\,\mathopen{}#2}
+
+\newcommand{\density}[2]{\ket{#1} \bra{#2}}
