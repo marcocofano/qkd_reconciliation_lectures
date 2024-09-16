@@ -1,19 +1,24 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Lachaise Assignment
-% Structure Specification File
-% Version 1.0 (26/6/2018)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Main Structural configuration
+
+% DISCLAIMERS and Acknowledgements
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% The layout and coloring is a modification of Templates used @ LuxQuanta Technologies
+% by the Author and his group
+% Authors:
+% Marco Cofano, Azarias Boutin
 %
-% This template originates from:
-% http://www.LaTeXTemplates.com
-%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Some environments take inspiration from: Lachaise Assignment
 % Authors:
 % Marion Lachaise & François Févotte
 % Vel (vel@LaTeXTemplates.com)
 %
 % License:
 % CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %----------------------------------------------------------------------------------------
 %	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
@@ -29,12 +34,32 @@
 \usepackage[framemethod=tikz]{mdframed} % Allows defining custom boxed/framed environments
 
 \usepackage{listings} % File listings, with syntax highlighting
-\lstset{
-	basicstyle=\ttfamily, % Typeset listings in monospace font
+\lstset{frame=tb,
+  language=Python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{LQBlue},
+  commentstyle=\color{gray},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=4
 }
 
 \usepackage{tikz}
 
+%----------------------------------------------------------------------------------------
+% Custom colors
+%----------------------------------------------------------------------------------------
+\definecolor{LQBlue}{HTML}{2F5496}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{gray75}{gray}{0.75}
 
 %----------------------------------------------------------------------------------------
 %	DOCUMENT MARGINS

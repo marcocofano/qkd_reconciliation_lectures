@@ -21,17 +21,9 @@
 
 \documentclass{book}
 
-\input{structure.tex} % Include the file specifying the document structure and custom commands
+\input{layout/structure.tex} % Include the file specifying the document structure and custom commands
 \usepackage{subfiles}
-%----------------------------------------------------------------------------------------
-%	ASSIGNMENT INFORMATION
-%----------------------------------------------------------------------------------------
-
-\title{Error Correction and Linear Codes Lectures} % Title of the assignment
-
-\author{Marco Cofano\\ \texttt{marco.cofano@luxquanta.com}} % Author name and email address
-
-\date{\today}
+\usepackage{afterpage}
 
 %----------------------------------------------------------------------------------------
 %----------------------------------------------------------------------------------------
@@ -64,16 +56,7 @@ minimum height=0.5em, minimum width=0.5em]
 
 \begin{document}
 
-\maketitle % Print the title
-\tableofcontents
-\subfile{lectures/introduction}
-\subfile{lectures/source_coding}
-\subfile{lectures/channel_coding}
-\subfile{lectures/linear_codes}
-\subfile{lectures/decoding}
-\subfile{lectures/privacy_amplification_theory}
+\input{layout/includes}
 
-\bibliographystyle{plain}
-\bibliography{biblio}
 
 \end{document}

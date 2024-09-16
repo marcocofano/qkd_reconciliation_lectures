@@ -1,0 +1,26 @@
+% Here you can modify all the variables you want and change the include orders and such
+
+%%%%% HERE IS WHERE YOU CONFIGURE YOUR DOCUMENT
+\def \titlecontent {QKD reconciliation lectures}
+\def \version {1.1.0}
+\def \subtitlecontent {}
+\def \author {Marco Cofano, PhD}
+\def \authortitle {Head of software, LuxQuanta Technologies}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\include{./layout/titlepage} %% do not change
+\afterpage{\blankpage{}} %% do not change
+\input{./layout/toc} %% do not change
+
+
+%%%%% HERE IS WHERE YOU INCLUDE YOUR FILES
+\subfile{./lectures/introduction}
+\subfile{./lectures/source_coding}
+\subfile{./lectures/channel_coding}
+\subfile{./lectures/linear_codes}
+\subfile{./lectures/decoding}
+\subfile{./lectures/privacy_amplification_theory}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\include{./layout/bibliography} % can be removed if you don't want references in the document
