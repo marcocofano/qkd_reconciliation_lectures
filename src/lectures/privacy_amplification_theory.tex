@@ -1,0 +1,195 @@
+\chapter{Privacy amplification - Theory}\label{chap:PA_theroy} % (fold)
+
+\section{Trace Distance}\label{sec:Trace Distance} % (fold)
+
+
+Let us imagine that we have two states possibly quantum, and we want to tell them apart or at least understand how different they are. This task will be of great importance in the context of  privacy amplification because there, we will need to tell if the combined state of our shared string and the information that the attacker has holds, resembles an ideal state where the attacker is completely oblivious of our secret.
+
+To understand how to formalize this concept let us imagine to general states $\rho_{real}$, $\rho_{ideal}$ one the real that we hold and an ideal that we would like to tend to. How different do they look like? How do we tell them apart. Consider the case in which we would be able to produce those states randomly with a probability $\frac{1}{2}$. We can use a measurement to distinguish between them: $M_I = \mathbb{1} - M_R$. The probability of correctly guessing the state is:
+
+\begin{eqnarray}
+	P_{succ} &=& \frac{1}{2} \Tr |M_R \rho_R| + \frac{1}{2} \Tr |M_I \rho_I| \\
+	&=& \frac{1}{2} + \frac{1}{2} \Tr |M_I (\rho_R - \rho_I)|
+	\label{eq:trace_distance_Psucc}
+\end{eqnarray}
+But what is the best we can get? It has been proved in \cite{...} that the optimal measurement is the projection on the positive eigenspace of $(\rho_R - \rho_I)$:
+
+\begin{eqnarray}
+	M_{opt} &= \sum_{j \in S_+} \ket{d_j}\bra{d_j}
+\end{eqnarray}
+where the diagonalized version of $(\rho_R - \rho_I)$ is:
+\begin{equation}
+	D = \sum_{i} d_i \ket{d_j}\bra{d_j}
+\end{equation}
+over the set $S_+ = \{i \;|\; d_i > 0 \}$
+
+This suggests the definition of trace distance:
+
+\begin{definition}[Trace Distance]
+	$$\mathcal{D} = max_{0<M<\mathbb{1}} \Tr |M(\rho_1 - \rho_2)|$$
+\end{definition}
+
+\begin{theorem}[]
+	If $A$ is the difference of two density matrices $A = \rho_1 - \rho_2$, then:
+	\begin{equation}
+		\mathcal{D} = \frac{1}{2} \Tr |\sqrt{A^{\dagger}A}|
+	\end{equation}
+\end{theorem}
+
+\textcolor{red}{Add section on distance properties of the trace distance}
+
+
+\section{The Min-Entropy}
+
+In this section we introduce a new measure of uncertainty in a random distribution. It is a form of Entropy like the Shannon entropy encountered before.
+In general there is a whole family of entropies. Each has a specific operational meaning that is more suited to measure some specific aspect of a random distribution.
+
+Shannon entropy was very well suited for the task of compression of messages to be sent over a channel. This was the main task for the coding channel problem. If you recall, give a random distribution X,  H(X) measured the optimal amount of bits per channel use, on average, that needed to be sent to convey a message, at least in the asymptotic limit. That is, given the intrinsic skewness of the distribution one could choose to encode some words with large probability with less bits. On average, H(X) gave the best possible decision on how many bits to assign to each word. In a sense, as for all Entropies, it conveyed a degree of surprise intrinsic in X. For completely uniform distributions we have the greatest amount of uncertanty on its outcomes (more surprise). While this is common to all definitions of entropies, each of them has some specific properties that renders them more useful for certain situations. Let us give an example that is more relevant for our current use case, where the Shannon entropy might fall short.
+
+Consider a state that is just a classical probability distribution $X$ realized by some bit strings:
+
+\begin{equation}
+	\rho_X = \sum_X \ket{x} \bra{x}
+\end{equation}
+
+Let us say that instead of considering this distribution for channel transmission we would like to use it for bit generation as an encryption key. It needs to be as uniform as possible to be trusted as an OTP key. Let's see if we can trust it.
+
+In case of $H(X) = n$, w know that the distribution is uniform, and we can trust those n bits. But what if an attacker, Eve controls a device that emits the bits and X happens to have an Entropy of $H(X) = \frac{n}{2}$? For large n the entropy would be still fairly large. Even in the case that Eve's state is uncorrelated with respect to the random distribution X, we can see that Eve might be able to guess the bits the device emits with a large probability, and independently of the length of the string. Take for example this distribution
+\begin{equation}
+	\displaystyle P(X) = \begin{cases}
+		\frac{1}{2}                   & \text{$X = (1,1, \dots, 1)$} \\
+		\frac{1}{2} \frac{1}{2^n - 1} & \text{Otherwise}
+	\end{cases}
+\end{equation}
+
+This distribution has a Shannon entropy of $H(n) \approx \frac{1}{2}$. Although the Entropy gets larger as n increase, independently of n, we have a large probability of guessing the right key. This tells us that the Shannon Entropy might not be the right measure, if we want to understand the potential of a distribution to be used for cryptography.
+
+For this reason we should change our definition of entropy. A better choice in this case is the so-called min-Entropy, $H_{min}$:
+\begin{equation}
+	H_{min} = -\log max_x p_x
+	\label{eq:minEntropy}
+\end{equation}
+Instead of taking the average of the surprise function (or what we previously called the information content) $i(x) = -\log p_x$, we take the worst case scenario (the event with minimum probability). Let us see how it behaves in the previous case:
+
+\begin{equation}
+	H_{min} = -\log max_x p_x = - \log \frac{1}{2} = 1
+\end{equation}
+This quantity is still measured in bits. This means that effectively this distribution has only one bit of information that is truly random, which matches our intuition, i.e. Eve has $\frac{1}{2}$ probability of guessing the right result, independently of $n$.
+
+Eve probability of guess is effectively $P_{Eve} = max P_x$ so $H_{min} = -\log P_{guess}$
+The concept of min Entropy carries over to conditional probability, as for the Shannon Entropy.
+
+Let us see how to modifiy the previous arguments in the case of Eve holding a quantum state, with some correlations with the classical information in X. Eve can conjure an optimal measurment in order learn as much as possible information about the distribution X.
+
+It is not hard to see that this is the same problem we faced before with distinguishing quantum states. In that case we imagined two states with a $\frac{1}{2}$ probability of happening. Here we have multiple states, parametrized by the events in X and their respective probabilities:
+
+\begin{equation}
+	P_{guess} = max_{\{ M_X\}_X} \sum p_x \Tr (M_x \rho_x^E)
+\end{equation}
+where the max is taken over all POVM $\{M_x |  \sum M_x = \mathbb{1}\}$
+
+\begin{example}
+	Say that we have the following state:
+	\begin{equation}
+		\rho_{XE} =  \frac{1}{2} \density{0}{0}_X \omul \ket{0}\bra{0} + \frac{1}{2} \density{1}{1}_X \omul \ket{+}\bra{+}_E
+	\end{equation}
+
+	Let's compute the probability of guessing the right result:
+	\begin{eqnarray}
+		P_{guess} &=&
+		\max_{\substack{M = 0\\ M_1 + M_2 = \mathbb{1}}} \frac{1}{2} \Tr  \{M_0 \density{0}{0}_X\}  + \Tr\{M_1 \ket{0}\bra{0}_E\} \nonumber \\
+		&=&
+		\max_{\substack{0 \le M \le \mathbb{1}}} \frac{1}{2} \Tr \{M\density{0}{0}_X\} + \Tr\{\ket{0}\bra{0}_E) - \Tr\{M\ket{0}\bra{0}_E\} \nonumber \\
+		&=&
+		\frac{1}{2} + \frac{1}{2} \max_{\substack{0 \le M \le \mathbb{1}}} \Tr\{M(\ket{0}\bra{0}_E - \ket{+}\bra{+}_E)\} \nonumber \\
+		&=& \frac{1}{2} + \frac{1}{2} \mathcal{D}(\ket{0}\bra{0}_E, \ket{+}\bra{+}_E)) \nonumber\\
+		&=& \frac{1}{2} + \frac{1}{2} \mathcal{D}(\rho_0^E, \rho_1^E)
+	\end{eqnarray}
+\end{example}
+
+In general the computation is a lot harder than this and it can be solved through Semi definite programming (SDP)
+
+Let's list a few very important results about the $H_{min}$:
+
+\begin{enumerate}
+	\item For any cq-state $\rho_{XE}$:
+	      \begin{equation}
+		      0 \le H_{min}(X|E)
+	      \end{equation}
+	\item if X is a quantum state then $H_{min}$ can be negative
+	\item The Min-Entropy fulfills a type of
+	      \begin{equation}
+		      H_{min}(X|E) \ge H_{min}(X) - \log(|E|)
+	      \end{equation}
+	      where the last item can be extended:
+	      \begin{equation}
+		      H_{min}(X|EC) \ge H_{min}(X|E) - \log(|C|)
+	      \end{equation}
+	      and this is going to be very important, when we want to compute the penalty due to the verification step of the Error correction.
+	\item  On the other side the min-Entropy fulfills a data processing inequality:
+	      \begin{equation}
+		      H_{min}(X|E) \ge H_{min}(X|EC)
+	      \end{equation}
+\end{enumerate}
+
+\section{Extracting randomness from data with side information}
+
+The context in which we will operate in any QKD protocol is the following. Two parties share, after error correction, some identical information, up to a certain probability $\epsilon_{EC}$. This shared data is usually in the form a bit stream which we will model as being produced as a sampling of a certain classical uniform distribution. An attacker has gained some information over those bits in the form of a (possibly quantum) state correlated with our classical information. The situation is that the transmitter and receiver (Alice and Bob) share a cq-state of the form:
+
+\begin{equation} \label{eq:cq_state}
+	\rho_X = \sum_X p_x\ket{x} \bra{x} \otimes \rho^E_x
+\end{equation}
+
+Eve's side information correlates with the classical information X. A clever measurement of her q-bits would lead to some knowledge of the bits $x$.
+The goal of this section will be to use the machinery of quantum state distances and min-Entropy to describe a notion of output state for our randomness extraction process that will be the basis for privacy amplification.
+
+How can we be safely consider some of the bits we have, secure from Eve, the attacker? The operation that we will perform have to transform the state \ref{eq:cq_state} into one that is:
+\begin{enumerate}
+	\item un-correlated with respect to  Eve's side information
+	\item uniform over a subset of the original bits (as large as possible, given Eve's side information)
+\end{enumerate}
+To start with, we will not consider the full case of Eve attacking a commuinication between a transmitter and a receiver. Let's for the moment focus on the situation of Eve holding onto some information of Alice data.
+Let's create some extreme cases to visualize what is needed.
+
+\begin{example}[Classically maximally correlated state]
+	Imagine the complete state between Alice and Eve being:
+	\begin{equation}
+		\rho_{XE}= \frac{1}{2} \sum_{X \in (0,1)} \ket{k}\bra{k}_X \otimes \ket{k}\bra{k}_E
+		\label{eq:Eveknowseverything}
+	\end{equation}
+	it is straightfowrard to notice that the K-state that we hold (partial trace over Eve's state) is competely uniform as we need it:
+
+	\begin{equation}
+		\rho_X = \Tr_E \rho_{XE} = \frac{1}{2} \mathbb{1}_X
+	\end{equation}
+
+	The key we hold is completely uniform, but Eve knows every bit of it.
+\end{example}
+
+\begin{example}[Maximally entangled state]
+	This is the classical example in quantum information theory
+\end{example}
+
+\begin{example}[Uncorrelated, non-uniform]
+	The opposite example is the case in which the initial state is a product state, so there is no correlation between X and E (and the partial trace is zero). The X state is nonetheless extremely non-uniform, i.e. it is 1 with probability P(X=0) = 1:
+
+	\begin{equation}
+		\rho_{XE}= \ket{0}\bra{0}_X \otimes \rho_E
+	\end{equation}
+\end{example}
+
+Our goal of a state that is uniform and completely uncorrelated from Eve's side information is then:
+
+\definition[Uniform and uncorrelated state] \label{eq:PAgoalstate}
+This state is our goal or ideal state for a randomness extraction.
+\begin{equation}
+	\rho^{ideal}_{XE} = \frac{1}{2^n}\mathbb{1}_X \otimes \rho_E
+\end{equation}
+
+\definition[$\epsilon$-ignorance]
+Beign an ideal state we have a simple notion of measuring how far we get from this ideal:
+\begin{equation}
+	||\rho^{real}_{XE}, \rho^{ideal}_{XE}||_1 \le \epsilon
+\end{equation}
+
+As we saw before for the trace distance $||.||_1$, no measurements can tell the two states, real and ideal apart with a probability more than $\frac{1}{2} +\frac{1}{2}\epsilon$$.
