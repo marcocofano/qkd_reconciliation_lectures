@@ -28,30 +28,28 @@
 \usepackage{bbold}
 \usepackage{mathtools}
 \usepackage{enumerate} % Custom item numbers for enumerations
-
 \usepackage[ruled]{algorithm2e} % Algorithms
-
 \usepackage[framemethod=tikz]{mdframed} % Allows defining custom boxed/framed environments
-
 \usepackage{listings} % File listings, with syntax highlighting
-\lstset{frame=tb,
-  language=Python,
-  aboveskip=3mm,
-  belowskip=3mm,
-  showstringspaces=false,
-  columns=flexible,
-  basicstyle={\small\ttfamily},
-  numbers=none,
-  numberstyle=\tiny\color{gray},
-  keywordstyle=\color{LQBlue},
-  commentstyle=\color{gray},
-  stringstyle=\color{mauve},
-  breaklines=true,
-  breakatwhitespace=true,
-  tabsize=4
-}
-
 \usepackage{tikz}
+\usepackage{amsthm}
+\usepackage{subfiles}
+\usepackage{afterpage}
+\usepackage{graphicx}
+\usetikzlibrary{shapes,arrows}
+\usepackage{geometry} % Required for adjusting page dimensions and margins
+\usepackage[utf8]{inputenc} % Required for inputting international characters
+\usepackage[T1]{fontenc} % Output font encoding for international characters
+\usepackage{titlesec} % The titles
+\usepackage{hyperref} % The titles
+\usepackage[
+  acronym,
+  nopostdot,
+  style=index,
+  nonumberlist,
+  toc
+]{glossaries}
+\usepackage[nottoc]{tocbibind}
 
 %----------------------------------------------------------------------------------------
 % Custom colors
@@ -61,11 +59,66 @@
 \definecolor{mauve}{rgb}{0.58,0,0.82}
 \definecolor{gray75}{gray}{0.75}
 
+
+\lstset{frame=tb,
+	language=Python,
+	aboveskip=3mm,
+	belowskip=3mm,
+	showstringspaces=false,
+	columns=flexible,
+	basicstyle={\small\ttfamily},
+	numbers=none,
+	numberstyle=\tiny\color{gray},
+	keywordstyle=\color{LQBlue},
+	commentstyle=\color{gray},
+	stringstyle=\color{mauve},
+	breaklines=true,
+	breakatwhitespace=true,
+	tabsize=4
+}
+%------------------------------------------------------------------------
+%	RENEW commands
+%------------------------------------------------------------------------
+\newcommand{\hsp}{\hspace{10pt}}
+\renewcommand{\chaptername}{Lecture}
+
+\renewcommand{\thechapter}{\arabic{chapter}} % Chapter numbering
+\renewcommand{\thesection}{\arabic{section}} % section numbering
+\renewcommand{\thesubsection}{\arabic{subsection}} % subsection numbering
+\renewcommand{\thesubsubsection}{\alph{subsubsection}} % subsubsection numbering
+\renewcommand{\thefigure}{\arabic{figure}} % Figure numbering
+
+%------------------------------------------------------------------------
+%	Theorem Environments
+%------------------------------------------------------------------------
+\newtheoremstyle{custom}%
+  {15pt} % Space above
+  {15pt} % Space below
+  {\itshape} % Body font
+  {} % Indent amount
+  {\bfseries} % Theorem head font
+  {.} % Punctuation after theorem head
+  {5pt plus 1pt minus 1pt} % Space after theorem head
+  {} % Theorem head spec
+
+\theoremstyle{custom}
+% \newtheorem{theorem}{Theorem}[chapter]
+% \newtheorem{definition}{Definition}[chapter]
+% \newtheorem*{remark}{Remark}
+
+
+\tikzstyle{block} = [draw, fill=white, rectangle,
+minimum height=3em, minimum width=6em]
+\tikzstyle{socket} = [draw, fill=white, rectangle, minimum height=0.5em, minimum width=0.5em]
+\tikzstyle{sum} = [draw, fill=white, circle, node distance=1cm]
+\tikzstyle{input} = [coordinate]
+\tikzstyle{output} = [coordinate]
+\tikzstyle{pinstyle} = [pin edge={to-,thin,black}]
+
 %----------------------------------------------------------------------------------------
 %	DOCUMENT MARGINS
 %----------------------------------------------------------------------------------------
 
-\usepackage{geometry} % Required for adjusting page dimensions and margins
 
 \geometry{
 	paper=a4paper, % Paper size, change to letterpaper for US letter size
@@ -83,8 +136,6 @@
 %	FONTS
 %----------------------------------------------------------------------------------------
 
-\usepackage[utf8]{inputenc} % Required for inputting international characters
-\usepackage[T1]{fontenc} % Output font encoding for international characters
 
 \usepackage{XCharter} % Use the XCharter fonts
 
@@ -119,7 +170,7 @@
 \newenvironment{commandline}{
 	\medskip
 	\begin{mdframed}[style=commandline]
-}{
+		}{
 	\end{mdframed}
 	\medskip
 }
@@ -141,14 +192,14 @@
 	leftmargin=2cm,
 	rightmargin=2cm,
 	singleextra={%
-		\draw[fill=black!10!white](P)++(0,-1.2em)rectangle(P-|O);
-		\node[anchor=north west]
-		at(P-|O){\ttfamily\mdfilename};
-		%
-		\def\l{3em}
-		\draw(O-|P)++(-\l,0)--++(\l,\l)--(P)--(P-|O)--(O)--cycle;
-		\draw(O-|P)++(-\l,0)--++(0,\l)--++(\l,0);
-	},
+			\draw[fill=black!10!white](P)++(0,-1.2em)rectangle(P-|O);
+			\node[anchor=north west]
+			at(P-|O){\ttfamily\mdfilename};
+			%
+			\def\l{3em}
+			\draw(O-|P)++(-\l,0)--++(\l,\l)--(P)--(P-|O)--(O)--cycle;
+			\draw(O-|P)++(-\l,0)--++(0,\l)--++(\l,0);
+		},
 	nobreak,
 }
 
@@ -157,11 +208,76 @@
 	\medskip
 	\newcommand{\mdfilename}{#1}
 	\begin{mdframed}[style=file]
-}{
+		}{
 	\end{mdframed}
 	\medskip
 }
 
+%----------------------------------------------------------------------------------------
+%  HEADINGS
+%----------------------------------------------------------------------------------------
+\newcommand{\cchapter}[1]{
+	\chapter*{#1}
+	\phantomsection
+	\addcontentsline{toc}{chapter}{#1}
+}
+
+% Custom format for numbered chapters
+\titleformat{\chapter}[display]
+  {\bfseries\LARGE\color{LQBlue}} % Large and bold, with color
+  {\chaptername\ \thechapter} % "Lecture 1" with color
+  {20pt} % Space between "Lecture 1" and chapter title
+  {\Huge\bfseries\color{LQBlue}} % Chapter title in large font and blue
+
+\titlespacing*{\chapter}{0pt}{50pt}{40pt} % Adjust vertical spacing
+
+% Custom format for non-numbered chapters
+\titleformat{name=\chapter,numberless}[display]
+  {\bfseries\LARGE\color{LQBlue}} % Large and bold, with color
+  {} %% No "Lecture" and number
+  {20pt} % Space between "Lecture 1" and chapter title
+  {\Huge\bfseries\color{LQBlue}} % Chapter title in large font and blue
+
+\titlespacing*{\chapter}{0pt}{50pt}{40pt} % Adjust vertical spacing
+
+
+% Custom format for numbered sections
+\titleclass{\section}{straight}
+
+\titleformat{\section}[hang]
+  {\large\normalfont\sffamily} % Section title formatting: large, sans-serif
+  {\color{LQBlue}\bfseries\thechapter.\thesection} % "Chapter.Section" in bold and blue
+  {1em} % Spacing between the label and the title
+  {\bfseries\color{LQBlue}} % Title in bold and blue
+
+\titlespacing*{\section}{0pt}{*2}{*1} % Adjust spacing before and after sections
+
+%Format of a subsection title
+\titleclass{\subsection}{straight}
+\titleformat{\subsection}[hang]
+{}
+{ }
+{0pt}
+{\small \normalfont \sffamily \hspace{2cm} \bfseries \thechapter.\thesection.\thesubsection \hsp \small \normalfont \sffamily \bfseries }
+
+
+%Format of a sub-subsection
+\titleclass{\subsubsection}{straight}
+\titleformat{\subsubsection}[hang]
+{}
+{ }
+{0pt}
+{\color{darkgray} \normalsize \normalfont \sffamily \hspace{2.5cm} \thesubsubsection ) \normalsize \normalfont \sffamily }
+
+
+% Space between tables
+\renewcommand{\arraystretch}{1.7}
+
+% Do not reset the figure count each chapter
+\counterwithout{figure}{chapter}
+\counterwithout{table}{chapter}
+\makeatletter
+\makeatother
 %----------------------------------------------------------------------------------------
 %	NUMBERED QUESTIONS ENVIRONMENT
 %----------------------------------------------------------------------------------------
@@ -177,9 +293,9 @@
 	roundcorner=5pt,
 	nobreak,
 	singleextra={%
-		\draw(P-|O)node[xshift=1em,anchor=west,fill=white,draw,rounded corners=5pt]{%
-		Question \theQuestion\questionTitle};
-	},
+			\draw(P-|O)node[xshift=1em,anchor=west,fill=white,draw,rounded corners=5pt]{%
+				Question \theQuestion\questionTitle};
+		},
 }
 
 \newcounter{Question} % Stores the current question number that gets iterated with each new question
@@ -190,7 +306,7 @@
 	\stepcounter{Question}
 	\newcommand{\questionTitle}{~#1}
 	\begin{mdframed}[style=question]
-}{
+		}{
 	\end{mdframed}
 	\medskip
 }
@@ -209,12 +325,12 @@
 	leftline=false, rightline=false,
 	nobreak,
 	singleextra={%
-		\draw(P-|O)++(-0.5em,0)node(tmp1){};
-		\draw(P-|O)++(0.5em,0)node(tmp2){};
-		\fill[black,rotate around={45:(P-|O)}](tmp1)rectangle(tmp2);
-		\node at(P-|O){\color{white}\scriptsize\bf !};
-		\draw[very thick](P-|O)++(0,-1em)--(O);%--(O-|P);
-	}
+			\draw(P-|O)++(-0.5em,0)node(tmp1){};
+			\draw(P-|O)++(0.5em,0)node(tmp2){};
+			\fill[black,rotate around={45:(P-|O)}](tmp1)rectangle(tmp2);
+			\node at(P-|O){\color{white}\scriptsize\bf !};
+			\draw[very thick](P-|O)++(0,-1em)--(O);%--(O-|P);
+		}
 }
 
 % Define a custom environment for warning text
@@ -222,7 +338,7 @@
 	\medskip
 	\begin{mdframed}[style=warning]
 		\noindent{\textbf{#1}}
-}{
+		}{
 	\end{mdframed}
 }
 
@@ -236,51 +352,54 @@
 % 	\end{info}
 
 \mdfdefinestyle{info}{%
-	topline=false, bottomline=false,
-	leftline=false, rightline=false,
-	nobreak,
-	singleextra={%
-		\fill[black](P-|O)circle[radius=0.4em];
-		\node at(P-|O){\color{white}\scriptsize\bf i};
-		\draw[very thick](P-|O)++(0,-0.8em)--(O);%--(O-|P);
-	}
-}
+topline=false, bottomline=false,
+leftline=false, rightline=false,
+nobreak,
+singleextra={%
+\fill[LQBlue](P-|O)circle[radius=0.6em];
+\node at(P-|O){\color{white}\scriptsize\bf i};
+\draw[line width=1.5mm, LQBlue](P-|O)++(0,-0.8em)--(O);%--(O-|P);
+}}
 
 % Define a custom environment for information
 \newenvironment{info}[1][Info:]{ % Set the default title to "Info:"
 	\medskip
 	\begin{mdframed}[style=info]
 		\noindent{\textbf{#1}}
-}{
+		}{
 	\end{mdframed}
 }
 
 \mdfdefinestyle{example}{%
-	topline=false, bottomline=false,
-	leftline=false, rightline=false,
-	nobreak,
-	singleextra={%
-		\fill[black](P-|O)circle[radius=0.6em];
-		\node at(P-|O){\color{white}\scriptsize\bf ex};
-		\draw[very thick](P-|O)++(0,-0.8em)--(O);%--(O-|P);
-	}
-}
+topline=false, bottomline=false,
+leftline=false, rightline=false,
+nobreak,
+singleextra={%
+\fill[LQBlue](P-|O)circle[radius=0.6em];
+\node at(P-|O){\color{white}\scriptsize\bf ex};
+\draw[line width=1.5mm, LQBlue](P-|O)++(0,-0.8em)--(O);%--(O-|P);
+}}
 
 % Define a custom environment for information
 \newenvironment{example}[1][Example:]{ % Set the default title to "Info:"
 	\medskip
 	\begin{mdframed}[style=example]
 		\noindent{\textbf{#1}}
-	}{
+		}{
 	\end{mdframed}
 }
 
-
+% -------------------------------------------------
 % Custom math operators
+% -------------------------------------------------
+
 \DeclareMathOperator{\Tr}{Tr}
 
 
+% -------------------------------------------------
 % Quantum Mechanical stuff
+% -------------------------------------------------
+
 \DeclarePairedDelimiter\bra{\langle}{\rvert}
 \DeclarePairedDelimiter\ket{\lvert}{\rangle}
 \DeclarePairedDelimiterX\braket[2]{\langle}{\rangle}{#1\,\delimsize\vert\,\mathopen{}#2}

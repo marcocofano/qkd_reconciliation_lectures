@@ -21,42 +21,22 @@
 
 \documentclass{book}
 
-\input{layout/structure.tex} % Include the file specifying the document structure and custom commands
-\usepackage{subfiles}
-\usepackage{afterpage}
-
-%----------------------------------------------------------------------------------------
-%----------------------------------------------------------------------------------------
-%	RENEW commands
-%----------------------------------------------------------------------------------------
-
-\renewcommand{\chaptername}{Lecture}
-\usepackage{amsthm}
-\newtheorem{theorem}{Theorem}[section]
-
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}[section]
-
-\theoremstyle{remark}
-\newtheorem*{remark}{Remark}
-
-\usetikzlibrary{shapes,arrows}
-
-\tikzstyle{block} = [draw, fill=white, rectangle,
-minimum height=3em, minimum width=6em]
-\tikzstyle{socket} = [draw, fill=white, rectangle,
-minimum height=0.5em, minimum width=0.5em]
-\tikzstyle{sum} = [draw, fill=white, circle, node distance=1cm]
-\tikzstyle{input} = [coordinate]
-\tikzstyle{output} = [coordinate]
-\tikzstyle{pinstyle} = [pin edge={to-,thin,black}]
-
-\usepackage{graphicx}
+\input{layout/structure} % Include the file specifying the document structure and custom commands
 \graphicspath{ {./images/} }
 
 \begin{document}
 
 \input{layout/includes}
 
+%%%%% HERE IS WHERE YOU INCLUDE YOUR FILES
+\subfile{./lectures/introduction}
+\subfile{./lectures/source_coding}
+\subfile{./lectures/channel_coding}
+\subfile{./lectures/linear_codes}
+\subfile{./lectures/decoding}
+\subfile{./lectures/privacy_amplification_theory}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\include{./layout/bibliography} % can be removed if you don't want references in the document
 
 \end{document}

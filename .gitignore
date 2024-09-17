@@ -8,5 +8,5 @@ material/*
 *.fdb_latexmk
 *.fls
 *.toc
-
+*.out
 
