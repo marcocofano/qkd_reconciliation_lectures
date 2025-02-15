@@ -54,31 +54,30 @@ jobs:
     if: github.event_name == 'create' && startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+    - name: checkout
+      uses: actions/checkout@v4
+      uses: leafo/gh-actions-lua@v9
 
-      - name: Download PDF artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: Compiled-PDF
-          path: ./
+    - name: Download PDF artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: Compiled-PDF
+        path: ./
 
-      - name: Extract Version Number from Tag
-        id: get_version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+    - name: Get Version from TAG
+      run: |
+        echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
-      - name: Install Lua (Minimal)
-        run: sudo apt-get install -y lua5.3
-      - name: Run Lua Script for Release Notes
-        run: |
-          lua scripts/generate_release_notes.lua "$env.VERSION" > release_notes.md
+    - name: Generate release notes
+      run: |
+        lua scripts/generate_release_notes.lua ${{ env.VERSION }} > ${{ github.workspace }}-RELEASE_NOTES.md
 
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ github.ref_name }}
-          name: "Release ${{ env.VERSION }}"
-          body_path: release_notes.md
-          files: "output.pdf"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+      with:
+        tag_name: ${{ github.ref_name }}
+        name: "Release ${{ env.VERSION }}"
+        body_path: ${{ github.workspace }}-RELEASE_NOTES.md
+        files: "output.pdf"
