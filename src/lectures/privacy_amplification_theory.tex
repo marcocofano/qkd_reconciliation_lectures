@@ -135,7 +135,7 @@ Let's list a few very important results about the $H_{min}$:
 %
 \section{Extracting randomness from data with side information}
 
-The context in which we will operate in any QKD protocol is the following. Two parties share, after error correction, some identical information, up to a certain probability $\epsilon_{EC}$. This shared data is usually in the form a bit stream which we will model as being produced as a sampling of a certain classical uniform distribution. An attacker has gained some information over those bits in the form of a (possibly quantum) state correlated with our classical information. The situation is that the transmitter and receiver (Alice and Bob) share a cq-state of the form:
+The context in which we will operate in any QKD protocol is the following. Two parties share, after error correction, some identical information, up to a certain probability $\epsilon_{EC}$. This shared data is usually in the form a bit stream which we will model as being produced as a sampling of a certain classical uniform distribution. An attacker has gained some information over those bits in the form of a (possibly quantum) state correlated with our classical information. The honest parties share a cq-state with the attacker of the form:
 
 \begin{equation} \label{eq:cq_state}
 	\rho_X = \sum_X p_x\ket{x} \bra{x} \otimes \rho^E_x
@@ -168,7 +168,7 @@ Let's create some extreme cases to visualize what is needed.
 
 	The key we hold is completely uniform, but Eve knows every bit of it.
 \end{example}
-%
+
 \begin{example}[Maximally entangled state]
 	This is the classical example in quantum information theory. Suppose Alce and Eve share the bipartite state:
 	\begin{equation}
@@ -200,7 +200,7 @@ Let's create some extreme cases to visualize what is needed.
 
 	Let's compute the postmeasurement state using as Krauss operators the projective measurement itself:
 	\begin{eqnarray}
-		\Tr_E{\ket{\Psi_{AE}}\bra{\Psi_{AE}}} &\rightarrow&  \rho_\theta \\
+		\ket{\Psi_{AE}}\bra{\Psi_{AE}} &\rightarrow&  \rho_\theta \\
 		\rho_\theta &=& \displaystyle\frac{P_+\rho P_+}{\Tr (P_+\rho)} \\
 		&=& \frac{1}{2} \density{\theta}{\theta}_A \otimes \density{\theta}{\theta}_E
 	\end{eqnarray}
@@ -210,6 +210,8 @@ Let's create some extreme cases to visualize what is needed.
 		&=& \frac{1}{2} (\cos^2{\theta} + \sin^2{\theta}) = \frac{1}{2}\\
 		&=& P(A = 1)
 	\end{eqnarray}
+
+	Exercise: Although Alice sees a uniform distribution for her states, Eve can perform a measurment of her own states. Depending on the relative angle of the basis chosen by Alice and Eve, the latter will have from complete to no knowledge of Alice data. What are those extreme angles? (This is very relevant in the BB84 and, in general, all QKD protocols)
 \end{example}
 
 \begin{example}[Uncorrelated, non-uniform]
@@ -235,3 +237,9 @@ Being an ideal state we have a simple notion of measuring how far we get from th
 \end{equation}
 
 As we saw before for the trace distance $||.||_1$, no measurements can tell the two states, real and ideal apart with a probability more than $\frac{1}{2} +\frac{1}{2}\epsilon$.
+
+
+
+\section{Tripartite extraction, classical communication in QKD and seeds}
+
+\section{Strong seeded extractors}

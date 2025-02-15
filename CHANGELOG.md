@@ -4,8 +4,12 @@ This repository follows a SemVer versioning system.
 
 ## Unreleased
 
-## [0.0.1](https://github.com/marcocofano/qkd_reconciliation_lectures/releases/tag/0.0.1) - 2025-02-15
+### Changed
 
+- privacy amplification implementation chapter
+- some improvements on linear codes introduction
+
+## [0.0.1](https://github.com/marcocofano/qkd_reconciliation_lectures/releases/tag/0.0.1) - 2025-02-15
 
 ### Changed
 
@@ -18,6 +22,3 @@ This repository follows a SemVer versioning system.
 - first batch of lectures
 - skeleton slidev master bari slides
 
-### Fixed
-
-### Removed

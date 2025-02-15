@@ -1,11 +1,10 @@
-
 \chapter{Linear Codes}
 \section{Description, Encoding and Decoding complexity}
-Shannon's channel theorem presents a result that sets thresholds that ensure optimal coding. Those theorems are not very practical in find actual codes to work with. There are three main complexities arising in finding good codes algorithmically:
+Shannon's channel coding theorem provides the limits of what we can do to recover of a message that passes through a noisy channel. Those theorems are not very practical in finding the actual codes to work with. The just set an asymptotic limit on the rate at wich we could encode and decode, given the current channel conditions. In practice, finding good codes is a much more extensive area of research, with its own mathematical challenges. In a sense, once the main features of what constitutes a good code are studied, designing them for the problem at hand becomes more of an art. There are three main complexities arising in finding good codes algorithmically:
 \begin{itemize}
-	\item Description Complexity
-	\item Encoding Complexity
-	\item Decoding Complexity
+	\item Description Complexity: a code can be described by a certain number of parameters. It will become clear, that as in the original Shannon Theorem proof, there exist families of codes that behave similarily and the that can be described with very few parameters. Also codes will have an intrisic rate of encoding and decoding, meaning that they will achieve a certain portion of the optimal rate (Shannon capacity). This is called the capacity gap.
+	\item Encoding Complexity: The encoder performs a certain procedure in order to allow for the recovery of data even in the presence of noise. Although in general the procedure is very similar for a large part of the codes, it is still an engineering problem to get to the optimal encoding throughput, meaning design fast and reliable encoders.
+	\item Decoding Complexity: the decoding algorithm as we will see is one that cannot be solved optimally in polynomial time.It is crucial then, to struck the right balance between fast and accurate decoders. While in principle in the asyptotic limit the channel coding problem is one that can be solved (below the channel capacity) or not (above it). In practice the decoder is a finite processor and might fail even below the capacity.
 \end{itemize}
 
 The main focus of classical and modern coding theory is then to find codes that have a high correction capability, but also that are fast and simple to implement. In almost all circumstances obtaining a code that fulfills any of these requirements and strict optimality (in the sense of Shannon theorem) is bound to fail. But there is a large class of modern codes that can reach extremely good performance and still be able to work very close to the Shannon limit.
@@ -17,10 +16,10 @@ Hamming codes were invented in the 50s and have been used since then even if the
 
 Let's start with the task of sending m bits called the message bits, through a noisy channel. We will denote them as $b_1, \dots, b_m$. We want to add a number of other bits, called parity bits $(p_1, \dots, p_k)$ in such a way that a certain number of equations involving both the message and parity bits are satisfied. Those equations, the parity check equations, are (linear) constraints on the choice of parity bits for each possible set of message bits, as they enforce the overall parity of the bits involved.
 
-Those parity check equations make sure that it is possible upon their inspection on the received message to know if there is a certain amount of bits that contain errors and in certain cases also to know exactly where, thus being able to correct them.
+Those parity check equations make sure that it is possible, upon their inspection on the received message, to know if there is a certain amount of bits that contain errors. In certain cases we could also know exactly where. This would allow us to correct them.
 
-The Hamming code $\mathcal{H}(n, k, d)$ is one of those codes where $n$ is the code length, $k$ is the number of message bits, and $d$ the minimum distance.
-Thus, this code has a \textbf{code rate} of $\frac{4}{7}$.
+The Hamming code $\mathcal{H}(n, k, d)$ is one of those codes. We denote $n$ the code length, $k$ the number of message bits, and $d$ the minimum distance.
+Thus, this code has a \textbf{code rate} of $\frac{k}{n}$.
 
 To understand intuitively how this code works let's draw the following Venn diagram:
 \def\firstcircle{(90:1.75cm) circle (2.5cm)}
@@ -55,7 +54,10 @@ The three circles are the three parity check equations. The sum of the bits in e
 	\end{cases}
 	\label{eq:hammingsys}
 \end{equation}
-It is easy to check that given that the three parity bits cover the message bits as in the Venn diagram above this code is capable of correcting one error and detect up to two errors.
+
+\begin{example}[Exercise]
+Show that as the three parity bits cover the message bits as in the Venn diagram above, this code is capable of correcting one error and detect up to two errors.
+\end{example}
 
 Given $x \in \mathbb{F}^3_2 $, we can write the system \ref{eq:hammingsys} as a matrix equation
 \begin{equation}

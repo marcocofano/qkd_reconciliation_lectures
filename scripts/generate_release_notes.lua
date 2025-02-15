@@ -31,7 +31,7 @@ local function extract_changelog_section(tag)
         if in_section then
             -- Add emojis to section headers
             for header, emoji in pairs(header_emojis) do
-                line = line:gsub("^" .. header, emoji .. " " .. header)
+                line = line:gsub("^" .. "### " .. header, emoji .. " " ..  header)
             end
             table.insert(changelog_section, line)
         end
