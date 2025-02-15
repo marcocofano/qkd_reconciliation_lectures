@@ -64,6 +64,7 @@ create_and_push_tag() {
 
     git add CHANGELOG.md
     git add VERSION
+    git add src/main.tex
     git commit -m "chore(release): update changelog for $new_tag"
     git tag -a "$new_tag" -m "Release $new_tag"
     git push origin "$new_tag"
