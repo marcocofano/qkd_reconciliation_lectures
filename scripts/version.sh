@@ -5,6 +5,7 @@ set -e  # Exit on any error
 
 # Configurable variables
 VERSION_FILE="VERSION"
+TEX_FILE="src/main.tex"
 
 # Function to display the current version
 show_version() {
@@ -61,6 +62,7 @@ bump_version() {
     # Create the new version
     new_version="$major.$minor.$patch"
     echo "$new_version" > "$VERSION_FILE"
+    sed -i "s/\\\def \\\version {.*}/\\\def \\\version {$new_version}/" "$TEX_FILE"
     echo "Version bumped to $new_version"
 }
 

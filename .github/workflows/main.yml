@@ -1,11 +1,13 @@
 name: Build and Release LaTeX PDF
 
 on:
-  push:  # Run build stage on all commits to any branch
+  push:
+    branches:
+    - "main"
   pull_request:
   create:  # Run release stage when a tag is pushed
     tags:
-      - '*'  # Only trigger release for versioned tags (e.g., v1.0.0)
+      - '*' 
 
 jobs:
   build:
@@ -23,6 +25,16 @@ jobs:
           key: texlive-docker-${{ runner.os }}-latest
           restore-keys: texlive-docker-${{ runner.os }}-
 
+      - name: Get Last Commit Message
+        id: last_commit
+        run: echo "COMMIT_MESSAGE=$(git log -1 --pretty=%s)" >> $GITHUB_ENV
+
+      - name: Skip Workflow for Release Commit
+        if: contains(env.COMMIT_MESSAGE, 'chore(release)')
+        run: |
+          echo "Skipping build for release commit"
+          exit 0
+          
       - name: Pull LaTeX Docker Image (if not cached)
         run: |
           if [ ! -d "/tmp/.docker-cache" ]; then
@@ -48,7 +60,7 @@ jobs:
   release:
     name: Create Release
     needs: build
-    if: github.event_name == 'create' && startsWith(github.ref, 'refs/tags/v') && github.ref_name == 'main'
+    if: github.event_name == 'create' && startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -62,13 +74,13 @@ jobs:
 
       - name: Extract Version Number from Tag
         id: get_version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
       - name: Install Lua (Minimal)
         run: sudo apt-get install -y lua5.3
       - name: Run Lua Script for Release Notes
         run: |
-          lua scripts/generate_release_notes.lua > release_notes.md
+          lua scripts/generate_release_notes.lua "$env.VERSION" > release_notes.md
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1

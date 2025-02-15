@@ -4,7 +4,6 @@ This repository follows a SemVer versioning system.
 
 ## Unreleased
 
-
 ### Changed
 
 - First official release, but still in progress

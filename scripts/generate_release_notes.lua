@@ -2,7 +2,7 @@
 
 local changelog_path = "CHANGELOG.md"
 local tag_to_release = arg[1] -- The tag we want to release (passed as CLI argument)
-local repo_url = "https://github.com/marcocofano/qkd_reconciliation_lectures.nvim"
+local repo_url = "https://github.com/marcocofano/qkd_reconciliation_lectures"
 local header_emojis = {
     Added = "✨",
     Changed = "🔧",
@@ -101,7 +101,7 @@ local function main()
 
     -- -- Get the tags from Git
     local tags = get_git_tags()
-    local current_index = nil
+    local current_index = 0
     for i, current_tag in ipairs(tags) do
         if current_tag == tag_to_release then
             current_index = i
@@ -109,10 +109,6 @@ local function main()
         end
         current_tag = nil
     end
-
-    -- if not current_index then
-    --     error("Tag '" .. tag_to_release .. "' not found in Git tags.")
-    -- end
 
     local previous_tag = nil
     if current_index then
