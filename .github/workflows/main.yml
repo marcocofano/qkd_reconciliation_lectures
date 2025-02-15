@@ -12,6 +12,7 @@ on:
 jobs:
   build:
     name: Build LaTeX PDF
+    if: "!contains(github.event.head_commit.message, 'chore(release)')"
     runs-on: ubuntu-latest  # Using Ubuntu for LaTeX environment
     steps:
       - name: Checkout repository
@@ -24,16 +25,6 @@ jobs:
           path: /tmp/.docker-cache
           key: texlive-docker-${{ runner.os }}-latest
           restore-keys: texlive-docker-${{ runner.os }}-
-
-      - name: Get Last Commit Message
-        id: last_commit
-        run: echo "COMMIT_MESSAGE=$(git log -1 --pretty=%s)" >> $GITHUB_ENV
-
-      - name: Skip Workflow for Release Commit
-        if: contains(env.COMMIT_MESSAGE, 'chore(release)')
-        run: |
-          echo "Skipping build for release commit"
-          exit 0
           
       - name: Pull LaTeX Docker Image (if not cached)
         run: |
@@ -62,6 +53,9 @@ jobs:
     needs: build
     if: github.event_name == 'create' && startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
+    permissions:
+    contents: write
+    packages: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -90,4 +84,4 @@ jobs:
           body_path: release_notes.md
           files: "output.pdf"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
