@@ -15,38 +15,30 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Cache LaTeX installation
-        id: cache-latex
+      - name: Cache Docker Image
+        id: cache-docker
         uses: actions/cache@v3
         with:
-          path: |
-            /usr/share/texlive
-            /usr/bin/pdflatex
-            /usr/bin/latexmk
-            /usr/bin/bibtex
-            /usr/lib/texmf
-            /var/lib/dpkg/status  # Needed to keep track of installed packages
-          key: texlive-full-${{ runner.os }}-2023
-          restore-keys: |
-            texlive-full-${{ runner.os }}-
+          path: /tmp/.docker-cache
+          key: texlive-docker-${{ runner.os }}-latest
+          restore-keys: texlive-docker-${{ runner.os }}-
 
-
-      - name: Install LaTeX (Full)
+      - name: Pull LaTeX Docker Image (if not cached)
         run: |
-          if [ ! -d "/usr/share/texlive" ]; then
-            echo "Installing LaTeX..."
-            sudo apt-get update
-            sudo apt-get install -y texlive-full 
+          if [ ! -d "/tmp/.docker-cache" ]; then
+            docker pull ghcr.io/xu-cheng/texlive-full:latest
+            mkdir -p /tmp/.docker-cache
+            docker save ghcr.io/xu-cheng/texlive-full:latest -o /tmp/.docker-cache/texlive-image.tar
           else
-            echo "Using cached LaTeX installation"
+            docker load -i /tmp/.docker-cache/texlive-image.tar
           fi
 
-      - name: Compile LaTeX to PDF
+      - name: Compile LaTeX to PDF inside Docker
         run: |
-          export PATH=/usr/bin/:$PATH
-          cd src  # Navigate to the LaTeX folder
-          make report 
-          mv main.pdf ../output.pdf
+          docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace ghcr.io/xu-cheng/texlive-full:latest /bin/sh -c "
+            cd src && make report && mv main.pdf ../output.pdf
+          "
+
       - name: Upload PDF as artifact
         uses: actions/upload-artifact@v4
         with:
