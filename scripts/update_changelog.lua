@@ -4,9 +4,9 @@ local os = require("os")
 local io = require("io")
 
 -- Get the TAG environment variable
-local TAG = os.getenv("TAG")
-local VERSION = string.sub(TAG, 2)
-local REPO = "https://github.com/marcocofano/excalidraw/excalidraw.nvim"
+local TAG = os.getenv("TAG") or arg[1]
+local VERSION = TAG
+local REPO = "https://github.com/marcocofano/qkd_reconciliation_lectures/releases/tag"
 
 -- Main function to update the changelog
 local function main()
@@ -47,9 +47,9 @@ local function main()
         lines,
         insert_index + 1,
         string.format(
-        "## [v%s](%s/releases/tag/v%s) - %s\n",
-            REPO,
+            "## [%s](%s/%s) - %s\n",
             VERSION,
+            REPO,
             VERSION,
             os.date("%Y-%m-%d")
         )

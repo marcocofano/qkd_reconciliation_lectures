@@ -4,17 +4,18 @@ This repository follows a SemVer versioning system.
 
 ## Unreleased
 
-### CHANGED
+
+### Changed
 
 - First official release, but still in progress
 
-### ADDED
+### Added
 
 - workflows for releases
 - changelog
 - first batch of lectures
-- skeleton slidev Master bari slides 
+- skeleton slidev master bari slides
 
-### FIXED
+### Fixed
 
-### REMOVED
+### Removed

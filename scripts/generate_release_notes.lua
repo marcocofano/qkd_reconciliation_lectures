@@ -1,8 +1,7 @@
-
 -- Lua script to generate release notes without external dependencies
 
 local changelog_path = "CHANGELOG.md"
-local tag_to_release = arg[1]  -- The tag we want to release (passed as CLI argument)
+local tag_to_release = arg[1] -- The tag we want to release (passed as CLI argument)
 local repo_url = "https://github.com/marcocofano/qkd_reconciliation_lectures.nvim"
 local header_emojis = {
     Added = "✨",
@@ -61,6 +60,18 @@ local function get_git_tags()
 end
 
 local function get_commits_between_tags(current_tag, previous_tag)
+    -- If current_tag is nil, default to HEAD
+    current_tag = current_tag or "HEAD"
+
+    -- If previous_tag is nil, find the first commit
+    if not previous_tag then
+        local first_commit_cmd = "git rev-list --max-parents=0 HEAD"
+        local first_commit_handle = io.popen(first_commit_cmd)
+        if first_commit_handle then
+            previous_tag = first_commit_handle:read("*l")
+            first_commit_handle:close()
+        end
+    end
     local cmd = string.format("git log --pretty=format:'%%h %%s' %s...%s", previous_tag, current_tag)
     local handle = io.popen(cmd)
     if not handle then
@@ -91,21 +102,23 @@ local function main()
     -- -- Get the tags from Git
     local tags = get_git_tags()
     local current_index = nil
-    for i, tag in ipairs(tags) do
-        if tag == tag_to_release then
+    for i, current_tag in ipairs(tags) do
+        if current_tag == tag_to_release then
             current_index = i
             break
         end
+        current_tag = nil
     end
 
-    if not current_index then
-        error("Tag '" .. tag_to_release .. "' not found in Git tags.")
+    -- if not current_index then
+    --     error("Tag '" .. tag_to_release .. "' not found in Git tags.")
+    -- end
+
+    local previous_tag = nil
+    if current_index then
+        previous_tag = tags[current_index + 1]
     end
 
-    local previous_tag = tags[current_index + 1]
-    if not previous_tag then
-        error("No previous tag found for '" .. tag_to_release .. "'.")
-    end
 
     local commits = get_commits_between_tags(tag_to_release, previous_tag)
     --
