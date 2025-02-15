@@ -28,7 +28,7 @@ jobs:
           if [ ! -d "/usr/share/texlive" ]; then
             echo "Installing LaTeX..."
             sudo apt-get update
-            sudo apt-get install -y texlive-latex-base texlive-latex-recommended texlive-fonts-recommended texlive-latex-extra
+            sudo apt-get install -y texlive-full 
           else
             echo "Using cached LaTeX installation"
           fi
@@ -36,9 +36,8 @@ jobs:
       - name: Compile LaTeX to PDF
         run: |
           cd src  # Navigate to the LaTeX folder
-          pdflatex -interaction=nonstopmode -halt-on-error main.tex
-          mv main.pdf ../output.pdf  # Move output to root
-
+          make report 
+          mv main.pdf ../output.pdf
       - name: Upload PDF as artifact
         uses: actions/upload-artifact@v4
         with:
