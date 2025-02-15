@@ -35,7 +35,7 @@ jobs:
 
       - name: Compile LaTeX to PDF
         run: |
-          export PATH=/usr/local/texlive/2023/bin/x86_64-linux:$PATH
+          export PATH=/usr/bin/:$PATH
           cd src  # Navigate to the LaTeX folder
           make report 
           mv main.pdf ../output.pdf
