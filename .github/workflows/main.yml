@@ -1,0 +1,92 @@
+name: Build and Release LaTeX PDF
+
+on:
+  push:  # Run build stage on all commits to any branch
+  pull_request:
+  create:  # Run release stage when a tag is pushed
+    tags:
+      - '*'  # Only trigger release for versioned tags (e.g., v1.0.0)
+
+jobs:
+  build:
+    name: Build LaTeX PDF
+    runs-on: ubuntu-latest  # Using Ubuntu for LaTeX environment
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Cache LaTeX installation
+        uses: actions/cache@v3
+        with:
+          path: /usr/share/texlive
+          key: texlive-2023-${{ runner.os }}
+          restore-keys: |
+            texlive-2023-
+
+      - name: Install LaTeX (Minimal)
+        run: |
+          if [ ! -d "/usr/share/texlive" ]; then
+            echo "Installing LaTeX..."
+            sudo apt-get update
+            sudo apt-get install -y texlive-latex-base texlive-latex-recommended texlive-fonts-recommended texlive-latex-extra
+          else
+            echo "Using cached LaTeX installation"
+          fi
+
+      - name: Compile LaTeX to PDF
+        run: |
+          cd src  # Navigate to the LaTeX folder
+          pdflatex -interaction=nonstopmode -halt-on-error main.tex
+          mv main.pdf ../output.pdf  # Move output to root
+
+      - name: Upload PDF as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Compiled-PDF
+          path: output.pdf
+
+      - name: Add status badge
+        run: |
+          echo "![Build Status](https://github.com/${{ github.repository }}/actions/workflows/main.yml/badge.svg)" > status.md
+          cat README.md >> status.md
+          mv status.md README.md
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add README.md
+          git commit -m "Update build status badge" || echo "No changes to commit"
+          git push
+
+  release:
+    name: Create Release
+    needs: build
+    if: github.event_name == 'create' && startsWith(github.ref, 'refs/tags/v') && github.ref_name == 'main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Download PDF artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: Compiled-PDF
+          path: ./
+
+      - name: Extract Version Number from Tag
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+
+      - name: Install Lua (Minimal)
+        run: sudo apt-get install -y lua5.3
+      - name: Run Lua Script for Release Notes
+        run: |
+          lua scripts/generate_release_notes.lua > release_notes.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: "Release ${{ env.VERSION }}"
+          body_path: release_notes.md
+          files: "output.pdf"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
