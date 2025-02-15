@@ -11,6 +11,9 @@
 % License:
 % CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
 %
+% The template has been adapted and heavily modified by the Author 
+% and Azarias Boutin (Github: AzariasB, azarias.boutin@luxquanta.com)
+%
 % Author: Marco Cofano (marco.cofano@luxquanta.com) - LuxQuanta Technologies, S.L.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -24,19 +27,26 @@
 \input{layout/structure} % Include the file specifying the document structure and custom commands
 \graphicspath{ {./images/} }
 
-\begin{document}
 
-\input{layout/includes}
-
-%%%%% HERE IS WHERE YOU INCLUDE YOUR FILES
-\subfile{./lectures/introduction}
-\subfile{./lectures/source_coding}
-\subfile{./lectures/channel_coding}
-\subfile{./lectures/linear_codes}
-\subfile{./lectures/decoding}
-\subfile{./lectures/privacy_amplification_theory}
+%%%%% HERE IS WHERE YOU CONFIGURE YOUR DOCUMENT
+\def \titlecontent {QKD reconciliation lectures}
+\def \version {1.1.0}
+\def \subtitlecontent {}
+\def \author {Marco Cofano, PhD}
+\def \authortitle {Head of software, LuxQuanta Technologies}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\include{./layout/bibliography} % can be removed if you don't want references in the document
+\begin{document}
+
+\subfile{./layout/titlepage} %% do not change
+\afterpage{\null\newpage} %% do not change
+\tableofcontents
+
+\input{./layout/includes}
+
+\renewcommand{\bibname}{References}
+\nocite{*}
+\bibliographystyle{plain}
+\bibliography{biblio}
 
 \end{document}

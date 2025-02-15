@@ -39,9 +39,11 @@
 \usetikzlibrary{shapes,arrows}
 \usepackage{geometry} % Required for adjusting page dimensions and margins
 \usepackage[utf8]{inputenc} % Required for inputting international characters
+\usepackage{lmodern}
 \usepackage[T1]{fontenc} % Output font encoding for international characters
 \usepackage{titlesec} % The titles
 \usepackage{hyperref} % The titles
+\usepackage[english]{babel} % The titles
 \usepackage[
   acronym,
   nopostdot,
@@ -96,15 +98,15 @@
   {15pt} % Space below
   {\itshape} % Body font
   {} % Indent amount
-  {\bfseries} % Theorem head font
+  {\bfseries\color{LQBlue}} % Theorem head font
   {.} % Punctuation after theorem head
   {5pt plus 1pt minus 1pt} % Space after theorem head
   {} % Theorem head spec
 
 \theoremstyle{custom}
-% \newtheorem{theorem}{Theorem}[chapter]
-% \newtheorem{definition}{Definition}[chapter]
-% \newtheorem*{remark}{Remark}
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{definition}{Definition}[chapter]
+\newtheorem*{remark}{Remark}
 
 
 \tikzstyle{block} = [draw, fill=white, rectangle,

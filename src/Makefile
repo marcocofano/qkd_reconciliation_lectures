@@ -17,5 +17,4 @@ view: report
 	open $(DOCNAME).pdf
 
 clean:
-	rm lectures/*.aux
 	rm *.blg *.bbl *.aux *.log *.pdf *.out *.fdb_latexmk *.fls *.toc

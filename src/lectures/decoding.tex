@@ -1,5 +1,17 @@
 \chapter{Message Passing Decoding}
 
+\section{Decoding Repetition codes over symmetric channels}
+As a warm up for more complex decoding implementations we look at the very simple repetition codes. We implement the decoding algorithm over the BSC and BiAWGN channel. 
+
+We denote the repetition code $R(n, 2)$ over BSC, with channel parameter $\delta$. The minimum distance we have found before is $n$. This code can correct $\frac{n-1}{2}$ errors. The message plus repetition bits are denoted by $(u, x_1, \dots, x_n)$ 
+
+We assume that at the receiving end the $y$ string contains $\gamma_0$ 0s and $\gamma_1$ 1s. Then:
+\begin{eqnarray}
+	d(0, \dots, 0, y) &=& \gamma_1  = n-\gamma_0 \\
+	d(1, \dots, 1, y) &=& \gamma_0
+\end{eqnarray}
+
+
 \section{Factor graphs}
 
 \section{Marginalization via message passing on trees}
