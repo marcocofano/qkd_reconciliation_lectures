@@ -1,6 +1,6 @@
 # QKD Reconciliation Lectures
 
-![Build Status](https://github.com/marcocofano/qkd_reconciliation_lectures/actions/workflows/build-and-release.yml/badge.svg)
+![Build Status](https://github.com/marcocofano/qkd_reconciliation_lectures/actions/workflows/main.yml/badge.svg)
 
 A series of lectures on the reconciliation of QKD.
 
