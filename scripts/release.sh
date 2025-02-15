@@ -6,7 +6,6 @@ set -e  # Exit on any error
 VERSION_SCRIPT="scripts/version.sh"
 PREPARE_CHANGELOG_SCRIPT="scripts/update_changelog.lua"
 BRANCH="main"
-TAG_PREFIX="v"  # Prefix for tags, e.g., "v1.2.3"
 
 # Flags
 DRY_RUN=false
@@ -84,8 +83,8 @@ main() {
     fi
 
 
-    echo "Latest tag found: ${latest_tag}. Local version: ${TAG_PREFIX}${local_version}"
-    if [ $latest_tag != ${TAG_PREFIX}${local_version} ]; then
+    echo "Latest tag found: ${latest_tag}. Local version: ${local_version}"
+    if [ $latest_tag != ${local_version} ]; then
         echo "Local version and latest tag do not coincide. You might want to check manually"
         exit 1
     fi
@@ -98,7 +97,6 @@ main() {
 
     echo "Fetching the new version tag..."
     new_tag=$(cat VERSION)
-    new_tag="${TAG_PREFIX}${new_tag}"
     echo "New version tag: $new_tag"
 
     echo "Preparing the changelog..."
