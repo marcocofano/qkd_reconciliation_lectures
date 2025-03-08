@@ -1,5 +1,9 @@
 \chapter{Message Passing Decoding}
 
+The MAP decoder, as we already explained, is the optimal decoder, but it is also impractical to implement. Finding the optimal guess for the sent message bits knowing the received ones is a NP-hard problem.
+
+We need to find sub-optimal algorithms that can be run on a computer (possibly iteratively) that are still good enough. This is where the Tanner graph representation of the codes is quite useful. We will represent the decoding algorithm as an iterative procedure of updating our confidence in the received codeword's bits. To do, so we will pass the information of this confidence along the edges of the tanner graph and update it at the check nodes, where we have the information about the check equations, which are constraints to be satisfied. This iterative approach is called message passing or belief propagation and it will be the main topic of the following sections.
+
 \section{Decoding Repetition codes over symmetric channels}
 As a warm up for more complex decoding implementations we look at the very simple repetition codes. We implement the decoding algorithm over the BSC and BiAWGN channel. 
 
@@ -11,15 +15,322 @@ We assume that at the receiving end the $y$ string contains $\gamma_0$ 0s and $\
 	d(1, \dots, 1, y) &=& \gamma_0
 \end{eqnarray}
 
+The ML decoder in this case just computes the closes codeword to from the recesived $y$. So the decoding in this very simple case is straightforward:
 
-\section{Factor graphs}
+\begin{eqnarray}
+	d(0, \dots, 0, y) &\ge& d(1, \dots, 1, y) \rightarrow u = 1 \\
+	d(1, \dots, 1, y) &\ge& d(0, \dots, 0, y) \rightarrow u = 0
+\end{eqnarray}
+The ML decoder is basically a majority decoder.
 
-\section{Marginalization via message passing on trees}
+
+\section{Bipolar representation and Loglikelihood ratios}
+
+In many cases we might need to change the representation of our bits from ${0, 1}$ with the sum operation to the ${1, -1}$ with a multiplication operation. The conditional probabilities that we need to compute from the MAP/ML decoder will be then rewritten as:
+
+\begin{equation}
+	P(Y=y | X = 1) = P(Y=y | \ddot{X} = 1)
+\end{equation}
+
+It is also much more convenient, in what follows to pass from a probability to a log-likelihood representation:
+
+\begin{equation}
+	L(X) = \ln\left(\frac{P(\ddot{X} = 1)}{P(\ddot{X} = -1)}\right)
+\end{equation}
+
+There are several reasons to use LLRs instead of just probabilities:
+\begin{itemize}
+	\item logs compress the values. This is useful to avoid numerical instabilities in computer code
+	\item No normalization of probabilities needed. If we update a the probabilities, given that llrs are ratios, theis normalization is irrelevant and we can avoid to keep track of normalizations
+	\item for the most relevant channels they will be easy to compute (linear in the received bits)
+	\item in most cases the multiplications will be substituted by additions (faster on a computer)
+	\item logs are monotones so: if $L > 0 \rightarrow P(X=0) \ge P(X=1)$
+	\item the sign of $L$ tells the most probable binary value, the magnitude the reliability of the choice
+\end{itemize}
+
+\begin{example}[LLRs for main channels]
+For the BSC of crossover probability $\delta$: 
+\begin{equation}
+	L(Y=y|X) = \ln\left(\frac{1-\delta}{\delta}\right) \ddot{y}
+\end{equation}
+for the BiAWGN of variance $\sigma^2$:
+
+\begin{equation}
+	L(Y=y|X) = \ln \left(\frac{2}{\sigma^2}\right)\ddot{y}
+\end{equation}
+
+\end{example}
+
+To invert back to probabilities:
+\begin{eqnarray}
+	L(X) &=& \ln\left(\frac{P(\ddot{X} = 1)}{P(\ddot{X} = -1)}\right) \nonumber \\
+	e^{L(X)} &=& \frac{P(\ddot{X}=0}{1-P(\ddot{X}=1)} \nonumber \\
+	P(\ddot{X} = \ddot{x}) &=& \frac{1}{1+e^{-\ddot{x}L(\ddot(X))}}
+\end{eqnarray}
+
+Another useful formula is the expectation value of $\ddot{x}$ in terms of the LLR:
+
+\begin{eqnarray} \label{eq:expectationLLR}
+	E(\ddot{x}) &=&  P(\ddot{X}=1) - P(\ddot{X}=-1) \nonumber \\
+	 &=&  1 - 2P(\ddot{X}=1) \nonumber \\
+	 &=& \tanh\left(\frac{L(\ddot{X}}{2}\right)
+\end{eqnarray}
+
+\section{General message passing algorithm}
+
+\subsection{MacKey Soldier counting example}
+\textcolor{red}{To be done. Explain the example found in MacKey book about counting on a graph using message passing.}
+
+\subsection{LLR and repetition codes}
+
+If we consider a repetition code of 1 bit repeated n times, and assume we send through the channel with equal probabilities the input bits, we can compute the LLRs as:
+\begin{equation}
+	L(X|y) = L(y|X) = \sum_{i=1}^n \ln \left(\frac{P(y_i|X=0)}{P(y_i|X=1)}\right) = \sum_{i=1}^n L(y_i|X)
+\end{equation}
+assuming a memoryless channel. Which can give us the rule for the MAP decoder for a repetition code using LLRs:
+
+\begin{equation}
+\ddot{x} = \text{sign} (L(X|y)) = \text{sign}\left(\sum_{i=1}^n L(y_i|X)\right)
+\end{equation}
+
+\section{Iterative Decoding on Tanner graphs: Variable Nodes Update}
+
+A variable node of degree $d_v$ is equivalent to a $(d_v+1, 1)$ repetition code. The input edge is the message bit and the internal edges are the repetitions. The former is effectively transmitted, in this analogy, to the channel, the latter are transmitted "inside the graph". They will be received at the check nodes, transformed there and sent back to the variable node. The update at the variable node will be a calculation that we do per edge considering the updated as outcoming and the rest incoming. As seen in the previous section, the a posteriori LLR for a repetition code is computed as the sum of the LLRs. We update one edge using the rest of the edges, this will give us the reliability of that edge beign 0 or 1. Each internal edge LLRs so updated will be resent through the graph. 
+
+(image)
+
+
+\section{Iterative Decoding on Tanner graphs: Check Nodes Update}
+
+The check nodes get the LLrs of their incoming edges and need to assess how the information they carry satisfy the check equations. Edge by edge we update the LLRs according to this assessment in such a way that at the next iteration we are more confident that the equations will be satisfied. Let's swee how this works in practice.
+
+The first technical result that we need it a theorem proven by Gallager
+
+\begin{theorem}
+	
+	Consider a binary sequence such that the probability that the bit $l$ is 1 is $P_l$
+	The probability that an even number of digits is 1 is:
+
+	\begin{equation}
+		P = \frac{1}{2}\left(1 + \prod_{l=1}^{k}(1 - 2P_l)\right)
+	\end{equation}
+	
+\end{theorem}
+
+
+Notice that this is the situation we enconter at the check node. Each incoming edge carries a probability $P_l$, through its LLR. We want to know, given the probabilities of n-1 incoming edges, what is the probability that the parity is zero (even nuymber of 1s). We will use this to infer an update on each edge given the rest is known.
+
+Let's briefly prove the theorem: 
+
+\begin{proof}[Proof]
+	Consider
+\[
+  f_1(t) = \prod_{l=1}^{k}(1 - P_l + P_l t)
+\]
+
+so the linear term is the probability of 1 and the zeroth the probability of 0. Multiplying explicitly reveals that the coefficient of $t^i$ gives the probability of drawing exactly $i$ "1"s. Let's do it for $2$:
+
+\[
+(1 - P_0 + P_0 t)(1 - P_1 + P_1 t)
+= (1 - P_0)(1 - P_1) + \bigl((1 - P_0)P_1 + P_0(1 - P_1)\bigr)t + P_0 P_1 t^2
+\]
+
+
+The function
+\[
+  f_0 = \prod_{l=1}^{k}(1 - P_l - P_l t)
+\]
+
+is the same as $f_1$ but with the odd powers of $f_1$ having a sign flip. (So $f_0 + f_1$ cancels the odd counts and doubles the even ones, which is what we want.)
+
+Therefore:
+\[
+  f_0(1) + f_1(1) = 2P_{\text{even} \#1}
+\]
+
+Thus,
+\[
+  P_{\text{even} \#1} = \frac{1}{2}\left(f_0(1) + f_1(1)\right) = \frac{1}{2}\prod_{l=1}^{k}(1 - P_l + P_l + 1 - P_l - P_l)
+\]
+
+\[
+= \frac{1}{2}\left(1 + \prod_{l=1}^{k}(1 - 2P_l)\right)
+\]
+\end{proof}
+
+Similarly, for odd number of ones:
+\begin{eqnarray}
+	P_{\text{even} \#1} &=& \frac{1}{2}\left(f_0(1) + f_1(1)\right) = \frac{1}{2}\prod_{l=1}^{k}(1 - P_l + P_l + 1 - P_l - P_l) \nonumber \\
+	&=& \frac{1}{2}\left(1 + \prod_{l=1}^{k}(1 - 2P_l)\right)
+\end{eqnarray}
+
+Now, we will compute the MAP decoder for a single parity check $C(n, n-1)$ code with n transmitted bits and output $y$
+
+The incoming bits (edges) have one constraint: $\sum^{x^{[m]}_i} = 0$. This means that the number of ones is even.
+
+The optimal guess for the only message bit is:
+
+\begin{equation}
+	\hat{x}_1 = \arg \max P(x_1=b|y, \text{even number of 1s})
+\end{equation}
+
+We can re arrange the formula and use Gallager theorem:
+
+\begin{eqnarray}
+	P(x_1=0|y, \text{even number of 1s}) &=& P(x_2, \dots x_n  \text{even number of 1s}| y) \nonumber \\
+	&=& \frac{1}{2}\left(1 + \prod_{l=2}^{k}(1 - 2P(x_l=1|y_l))\right) \nonumber \\
+	&=& P(x_1=1|y, \text{even number of 1s})
+\end{eqnarray}
+
+rearranging:
+\begin{equation}
+	1 -2P( x_1=1|y, \text{even number of 1s}) = \prod_{l=2}^{k}(1 - 2P(x_l=1|y_l))
+\end{equation}
+
+if we apply eq. \ref{eq:expectationLLR} we can rewrite it in terms of LLRs:
+
+\begin{equation}
+	L(x_1|y, \text{even number of 1s}) = 2\tanh^{-1} \left(\prod_{l=2}^n\tanh\left( \frac{L(x_l|y_l)}{2}\right)\right)
+\end{equation}
+
+
+This formula can be applied directly to the check node update. A Single Check Node code is equivalent to a check node inside a larger LDPC code, where we want to update the LLR of one outgoing edge, given the other incoming LLRs and the check node. 
+
+image
+
+\newpage
+\section{Sum-Product Algorithm}
+
+We can finally state a complete algorithm for the iterative decoding of a Linear Code. 
+\vspace{1em}
+
+\textbf{Definitions}
+
+Let us define the sets of connections in the bipartite graph representing the LDPC code:
+
+\begin{itemize}
+    \item $N(i)$: Set of check nodes connected to the variable node $i$.
+    \item $M(j)$: Set of variable nodes connected to the check node $j$.
+\end{itemize}
+
+\vspace{1em}
+
+\textbf{Sum-Product (Belief Propagation) Algorithm}
+
+\begin{itemize}
+
+    \item \textbf{Step 1: Initialization (Variable Nodes)}
+
+    Initialize messages from each variable node $i$ to each check node $j \in N(i)$:
+    \[
+    \mu_{i \rightarrow j}^{(0)} = L_i,
+    \]
+    where $L_i$ is the Log-Likelihood Ratio (LLR) for the received bit associated with node $i$.
+
+    \item \textbf{Step 2: Check Node Update}
+
+    Compute the message from each check node $j$ to variable node $i \in M(j)$ at iteration $l$:
+    \[
+    \mu_{j \rightarrow i}^{(l)} = 2\,\tanh^{-1}\left(\prod_{i' \in M(j)\setminus\{i\}} \tanh\left(\frac{\mu_{i' \rightarrow j}^{(l-1)}}{2}\right)\right).
+    \]
+
+    \item \textbf{Step 3: Variable Node Update}
+
+    Compute updated messages from each variable node $i$ to each check node $j \in N(i)$:
+    \[
+    \mu_{i \rightarrow j}^{(l)} = L_i + \sum_{j' \in N(i)\setminus\{j\}} \mu_{j' \rightarrow i}^{(l)}.
+    \]
+
+    \item \textbf{Step 4: Total Final LLR and Check}
+
+    After convergence or a maximum number of iterations, compute the final LLR for each variable node $i$:
+    \[
+    L_i^{\text{total}} = L_i + \sum_{j \in N(i)} \mu_{j \rightarrow i}^{(l)}.
+    \]
+
+    Estimate transmitted bits $\hat{x}_i$ as:
+    \[
+    \hat{x}_i = 
+    \begin{cases}
+        0, & \text{if } L_i^{\text{total}} \geq 0,\\[6pt]
+        1, & \text{otherwise.}
+    \end{cases}
+    \]
+
+    Perform parity-check equations using $\hat{x}_i$ to verify successful decoding. If parity-check conditions are satisfied, decoding stops successfully. Otherwise, continue iterations or declare decoding failure after a predetermined number of iterations.
+
+\end{itemize}
+
+The algorithm is usally called sum-product because of the two main operations performed during variable node and check node updates.
 
 \section{Cycles, Trees and optimality of the decoder}
-\section{BEC, decoding via message passing}
-\section{Gallager theorem}
-\section{Sum-Product Algorithm}
+The SPA algorithm was deduced under certain assumptions:
+\begin{enumerate}
+	\item bitwise minimization of the MAP decoding
+	\item the codebits are independent
+	\item the messages are independent
+\end{enumerate}
+
+The last one is critically never really met. The messages would be independent if there were no cycles in the code. This is an incredibly important notion in practical codes. The SPA algorithm is optimal under the assumption of no cycles but it performs quite well, although sub-optimally, if this assumption is not met. In particular, the design of good codes should strive to have the highest girth possible (shortest cycle size) and as few cycles as possible. The longer the message passing goes through the iterations without encoutering a node that has previously being visited, the more the algorithm performs optimally. 
+
+The problem with cycles resides in the fact that the algorithm tries to update the beliefs (LLRs) over a certain bit using the others LLRs and the check equations. If it gets stuck in a cycle, certain bits will never increase their certainty (absolute value of the LLR) and might be bound to fail. In that case, certain codewords are never decoded correctly. This is one of the main culprits for the error floor scenario encountered before. 
+
+One might think that the solution to this problem is to only use cycle free codes. It can be shown that cycle free codes (whose Tanner graph is a tree), have a large number of codewords with weight 2 (so the minimum distance is 2). For this reason they are bound to fail. 
+
+
 \section{Simplifications of SPA}
+
+The standard check node update equation involves products of hyperbolic tangent functions, making it computationally intensive:
+
+\[
+\mu_{j \rightarrow i}^{(l)} = 2\,\tanh^{-1}\left(\prod_{i' \in M(j)\setminus\{i\}} \tanh\left(\frac{\mu_{i' \rightarrow j}^{(l-1)}}{2}\right)\right).
+\]
+
+The SPA algorithm is usually implemented in a slightly different form for software and hardware optimizations.
+
+First rewrite  and simplify the LLRs messages as:
+
+\begin{equation}
+	\mu_{j \rightarrow i}^{(l)} = \alpha_j\beta_j \;\;\; \text{where}\;\;\;  \alpha_j = \text{sign}(\mu) \;\;\; \text{and}\;\;\;  \beta_j = |\mu|
+\end{equation}
+
+\begin{eqnarray}
+	\mu_{j \rightarrow i}^{(l)} &=& (\prod_j \alpha_j) 2\,\tanh^{-1}\left(\prod_{i' \in M(j)\setminus\{i\}}\tanh\left(\frac{\beta_j}{2}\right)\right) \nonumber \\
+	\mu_{j \rightarrow i}^{(l)} &=& (\prod_j \alpha_j) 2\,\tanh^{-1}\left(\exp\left(\sum_{i' \in M(j)\setminus\{i\}}\ln\tanh\left(\frac{\beta_j}{2}\right)\right)\right) \nonumber \\
+\end{eqnarray}
+
+Now, first notice that $2\,\tanh^{-1}(\exp(.))$ is the inverse of the function inside the $\sum$ which is denoted by $\phi(\tau)$ 
+
+\[
+\phi(\tau) = -\ln\left(\tanh\left(\frac{|\tau|}{2}\right)\right) = \ln\left(\coth\left(\frac{|\tau|}{2}\right)\right)
+\]
+
+This function is self-inverse, i.e., it satisfies \(\phi(\phi(\tau)) = \tau\).
+This fact clearly simplifies the check node update significantly. Using this function, the original product-based equation transforms into a simpler sum-based form:
+
+\[
+\mu_{j \rightarrow i}^{(l)} = \left(\prod_{i' \in M(j)\setminus\{i\}} \text{sign}(\mu_{i' \rightarrow j}^{(l-1)})\right) 
+\cdot \phi\left(\sum_{i' \in M(j)\setminus\{i\}} \phi\left(|\mu_{i' \rightarrow j}^{(l-1)}|\right)\right).
+\]
+
+A further computational improvement is achieved by precomputing the sum for all incoming edges and subsequently subtracting the contribution of the current edge:
+
+\[
+\sum_{i' \in M(j)\setminus\{i\}} \phi(|\mu_{i' \rightarrow j}^{(l-1)}|) 
+= \left(\sum_{i' \in M(j)} \phi(|\mu_{i' \rightarrow j}^{(l-1)}|)\right) - \phi(|\mu_{i \rightarrow j}^{(l-1)}|).
+\]
+
+Using the \(\phi(\tau)\) function provides notable computational advantages:
+
+\begin{itemize}
+    \item It replaces computationally expensive product and hyperbolic tangent operations with simpler summations and a logarithmic transformation.
+    \item It allows efficient precomputation and reuse of intermediate results, significantly reducing computational complexity and execution time.
+    \item It improves numerical stability and reduces susceptibility to rounding errors, crucial for hardware implementations and practical decoding.
+\end{itemize}
+
 \section{Min-Sum Algorithm}
 \section{Syndrome based decoding}
+
+\section{Formal derivation of SPA / BP decoder algorithm}
+\section{Factor graphs}
+\section{Marginalization via message passing on trees}
