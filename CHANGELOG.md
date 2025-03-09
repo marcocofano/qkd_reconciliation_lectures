@@ -4,6 +4,9 @@ This repository follows a SemVer versioning system.
 
 ## Unreleased
 
+## [0.0.2](https://github.com/marcocofano/qkd_reconciliation_lectures/releases/tag/0.0.2) - 2025-03-09
+
+
 ### Added
 
 - Privacy amplification Implementations content
