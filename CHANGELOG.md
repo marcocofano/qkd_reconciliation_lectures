@@ -4,6 +4,12 @@ This repository follows a SemVer versioning system.
 
 ## Unreleased
 
+### Added
+
+- Privacy amplification Implementations content
+- Decoder chapter content
+- Fixed Linear codes chapter content
+
 ### Changed
 
 - privacy amplification implementation chapter
@@ -21,4 +27,3 @@ This repository follows a SemVer versioning system.
 - changelog
 - first batch of lectures
 - skeleton slidev master bari slides
-

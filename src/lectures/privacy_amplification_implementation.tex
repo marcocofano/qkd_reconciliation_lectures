@@ -1,12 +1,299 @@
 \chapter{Privacy amplification - Implemementation} \label{chap:PA_impl} % (fold)
 
-\section{Circulants and Toeplitz matrices}
+In this chapter we will focus on the implementation details of randomness extraction for Privacy amplification. 
+As it is known already, deterministic random extgractor (like Von Neumann extractors) do not require a seed and need more that the promise of a k-source. For these reason, they are not good extractors for QKD and Privacy amplification. We will focus on strong seeded extractors, in particular those implementations that are guaranteed to be safe against both classical and quantum side-information. 
 
-\section{Hashing via Matrices. Seed length problem}
+We refer to the practical and very useful python library cryptomite and their paper \cite{Cryptomite}. For a comprehensive review of Strong seeded extractors implementations. 
+
+In inplementing randomness extraction, one need to take into consideration some practical aspects beyond the theoretical proof of strong seeded extraction. In particular, it is usually very important to consider these factors:
+
+\begin{itemize}
+	\item \textbf{Computational time}: The weak input from which we need to extract randomness are usually quite large. It is then important that the computational time does scale in the best possible way. Many implementation scale quadratically or quasi-linearly (O(n\,log(n))
+	\item \textbf{Short seeds} Especially for pplications like QKD Privacy Amplification, the seed needs to be transmitted through the classical channel and transmitting very long seeds might incur in an overhead that is not acceptable. As we showed before, trivial seeded randomness extraction has seeds of length n*m. Universal-2 Hashing might reduce this to $\sim n + m$ or even $\sim n$.
+	\item \textbf{Constant time operations} As a cryptographical algorithm, randomness extraction implementations might incur in side channel attacks that exploit small differences in running times for different inputs.
+	\item \textbf{Numerical stability and known resources} Some implementations might incur in some numerical instabilities due to the use of floating point vs integer arithmetic. Especially in Hardware / FPGA implementation the numerical stability and efficiency in the allocated resources is of great importance. Some implementations, like the one exposed here use for example Fast Fourier Transform techniques, which are prone to numerical imprecision. An approach using Number theoretical transform or NTT, is known to reduce numerical instabilities.
+\end{itemize}
+
+In what follows we will give a brief introduction to some practical implementations and their properties.
 
 \section{Strong seeded extractors via Toeplitz matrices}
 
-\subsection{FFT Toepliz matrix multiplication}
+We can design a hash function parametrized by a seed vector $S = (S_0, \dots, S_{d-1})$ of length $d$, embedding this vector in a matrix. In particular, it turns out that a good choice for the matrix is for it to be of Toeplitz type. 
+
+\begin{definition}[Toeplitz matrix]
+
+Given a seed vector \( s \) of length \( d \):
+\[
+s = [s_0, s_1, s_2, \dots, s_{d-1}]
+\]
+
+we define the \( m \times n \) Toeplitz matrix \( T_s \), with \( d = m + n - 1 \), as follows:
+
+\[
+T_s =
+\begin{pmatrix}
+s_{n-1} & s_{n-2} & s_{n-3} & \dots & s_0 \\
+s_{n} & s_{n-1} & s_{n-2} & \dots & s_{1} \\
+s_{n+1} & s_{n} & s_{n-1} & \dots & s_{2} \\
+\vdots & \vdots & \vdots & \ddots & \vdots \\
+s_{n+m-2} & s_{n+m-3} & s_{n+m-4} & \dots & s_{m-1}
+\end{pmatrix}
+\]
+
+Formally, each entry is defined as:
+\[
+(T_s)_{i,j} = s_{n - 1 + i - j}
+\]
+\end{definition}
+
+\begin{example}
+
+Let \( s = [a,b,c,d,e] \) (length \( d = 5 \)), \( n = 3 \), \( m = 3 \):
+
+Then the Toeplitz matrix \(T_s\) is:
+
+\[
+T_s =
+\begin{pmatrix}
+c & b & a \\
+d & c & b \\
+e & d & c
+\end{pmatrix}
+\]
+
+and multiplying by a vector \( x = [x_0, x_1, x_2]^T \) gives:
+\[
+T_s \cdot x =
+\begin{pmatrix}
+c & b & a \\
+d & c & b \\
+e & d & c
+\end{pmatrix}
+\begin{pmatrix}
+x_0 \\ x_1 \\ x_2
+\end{pmatrix}
+=
+\begin{pmatrix}
+c x_0 + b x_1 + a x_2 \\
+d x_0 + c x_1 + b x_2 \\
+e x_0 + d x_1 + c x_2
+\end{pmatrix}
+\]
+
+\end{example}
+
+The relevance of the Toeplits matrix in this context should be clear given the next definition and Theorem.
+
+\begin{definition}[Toeplitz extractor]
+	The Toeplitz extractor $T(X, S) : {0,1}^n \times {0,1}^{n+m-1} \rightarrow {0,1}^{m}$ is built from a seed $S = (S_0, \dots, S_{n+m-2})$. Given the weak input $X = (x_0, \dots, x_n)$ we can extract the output random vector $Y = (y_0, \dots, y_{m-1})$ by:
+
+	\begin{equation}
+		Y = T(X,S) = T_S\,X
+	\end{equation}
+
+	as a standard matrix vector multiplication.
+\end{definition}
+
+\begin{theorem}[Toeplitz strong seeded extractor]
+	The Toeplitz extractor is a strong classical and quantum $(k, n+m-1, \epsilon, n, m)$-seeded randomness extractor, where:
+	\begin{equation}
+		m \le k + 2\, \log_2(\epsilon)
+	\end{equation}
+\end{theorem}
+
+One drawback of this implementation is that it requires in principle $O(n*m)$ operations, to compute the matrix vector multiplication. In order to uderstand how we can speed up this calculations to $O(n\, \log(n))$, we need to first realize the relation between Toeplitz matrices and convolutions. This relation is best described with an example.
+\begin{example}
+	
+	Consider a simple scenario with:
+
+	\begin{itemize}
+		\item Input vector \( X \) of length \( n = 3 \): \( X = [x_0, x_1, x_2]^T \).
+		\item Seed vector \( S \) of length \( d = n + m - 1 = 4 \): \( S = [s_0, s_1, s_2, s_3] \).
+		\item Output vector length \( m = 2 \).
+	\end{itemize}
+
+	The Toeplitz matrix constructed from the seed \( S \) is given by:
+
+	\[
+	T_S = \begin{pmatrix}
+	s_2 & s_1 & s_0 \\
+	s_3 & s_2 & s_1
+	\end{pmatrix}
+	\]
+
+	Then, the output vector \( Y \) produced by the Toeplitz extractor is:
+
+	\[
+	Y = T_S \cdot X =
+	\begin{pmatrix}
+	s_2 & s_1 & s_0 \\
+	s_3 & s_2 & s_1
+	\end{pmatrix}
+	\begin{pmatrix}
+	x_0 \\ x_1 \\ x_2
+	\end{pmatrix}
+	=
+	\begin{pmatrix}
+	s_2 x_0 + s_1 x_1 + s_0 x_2 \\
+	s_3 x_0 + s_2 x_1 + s_1 x_2
+	\end{pmatrix}
+	\]
+
+	\textbf{Relationship with Convolution}
+
+	The above multiplication of a Toeplitz matrix by the vector \( X \) can be seen as a convolution. Specifically, the result \( T_S \cdot X \) corresponds exactly to a segment of the linear convolution of the reversed seed vector \( S \) and the input vector \( X \).
+
+	Explicitly, defining convolution as:
+	\[
+	(X * S)_i = \sum_{j} X_j \cdot S_{i - j},
+	\]
+
+	then the Toeplitz multiplication \( T_S X \) satisfies:
+
+	\[
+	T_S \cdot X = (X * S_{\text{reversed}})[n-1 : n+m-2],
+	\]
+
+	where \( S_{\text{reversed}} \) is the reversed seed vector.
+
+	Thus, the Toeplitz extractor directly implements convolution with the reversed seed vector.
+
+	\vspace{0.5em}
+
+	Explicitly, for our simple example:
+	\[
+	T_S \cdot X = (X * [s_3, s_2, s_1, s_0])_{[2:3]}.
+	\]
+\end{example}
+
+The relation with convolution for this matrix multiplication is a good indicator that some speedup can be obtained by using the Discrete Fourier Transform (DFT) and FFT (Fast Fourier Transform)/NTT (Number Theoretic Transform) methods, which is what we will explore in the next section.
+
+\section{FFT Toepliz matrix multiplication with circulant embedding}
+
+As it is, the Toeplitz matrix does not allow for a straight forward adoption of DFT methods. But, we can embed a Toeplitz matrix into a square circulant matrix (which is a special Toeplitz matrix) of a bigger size. First, we define a circulant matrix:
+
+\begin{definition}
+	
+	\textbf{circulant matrix} \(C\) generated from a vector \( c = [c_0, c_1, c_2, \dots, c_{n-1}] \) is defined as:
+
+	\[
+		C = \begin{pmatrix}
+			c_0 & c_{n-1} & c_{n-2} & \dots & c_1 \\
+			c_1 & c_0 & c_{n-1} & \dots & c_2 \\
+			c_2 & c_1 & c_0 & \dots & c_3 \\
+			\vdots & \vdots & \vdots & \ddots & \vdots \\
+			c_{n-1} & c_{n-2} & c_{n-3} & \dots & c_0
+		\end{pmatrix}
+	\]
+
+Each row is a circular shift of the preceding row.
+\end{definition}
+
+
+Multiplication of a circulant matrix \(C\) by a vector \(x\) corresponds exactly to the \textbf{circular convolution} \( c \circledast x \). Specifically:
+
+\[
+(Cx)_k = (c \circledast x)_k = \sum_{j=0}^{n-1} c_j \, x_{(k - j) \bmod n}
+\]
+
+
+Circular convolution can be efficiently computed via the Fast Fourier Transform (FFT), leveraging the convolution theorem:
+
+\begin{enumerate}
+    \item Compute the FFTs of vectors \( c \) and \( x \):
+    \[
+    C(\omega) = \text{FFT}(c), \quad X(\omega) = \text{FFT}(x)
+    \]
+
+    \item Multiply these transforms element-wise:
+    \[
+    Y(\omega) = C(\omega) \cdot X(\omega)
+    \]
+
+    \item Compute the inverse FFT:
+    \[
+    y = \text{FFT}^{-1}(Y(\omega))
+    \]
+\end{enumerate}
+
+The vector \( y \) obtained is exactly \( c \circledast x \).
+
+It is instructive to see that the usual Discrete Fourier transform property that maps convolutions to multiplications has a quite straightforward algebraic proof using Circulant matrices. Indeed, if we denote $F_{ij} = w_{ij}$ the matrix representation of the DFT, where $w_{ij}$ are the primitive root of unity, One can show that $F$ is exactly the Unitary matrix that diagonalizes $C$:
+\begin{equation}
+	F\,C\,F^{-1} = \text{diag}(F\,S)
+\end{equation}
+so that the components of the DFT of the seed are the eigenvalues of C.
+
+from here one can rearrange the last equation:
+\begin{equation}
+Y = F^{-1} (\,\text{diag}(FS) \,FX)
+\end{equation}
+which is what we used before.
+
+
+So, the steps to follow to efficiently compute the Toeplitz hashing are:
+
+\begin{itemize}
+    \item Given Toeplitz matrix \(T\) of size \(m \times n\), embed it into a circulant matrix of size \(n+m-1\) (or typically the next power-of-two).
+    \item Pad both input vectors (seed and data) with zeros to match this size.
+    \item Perform circular convolution via FFT and extract relevant components from the resulting vector.
+\end{itemize}
+
+
+The computational complexity reduces from \( O(mn) \) to \( O((n) \log (n)) \). This is due to the fact that computing the FFT or its inverse can be achieved in $O(n\,\log(n))$, while the scalar multiplication between the vector in Fourier space has a complexity of just $O(n)$.
+
+Usually, the FFT works best with a size which is a power of 2. For this reason, it is advisable to embed the Toeplitz matrix to the closest power of two of $n$ or $n+m-1$. It is important to note that one has to properly pad both the Circulant matrix and the input vector with zeros when necessary, for size reasons. Once the convolutions are computed, depending on the actual embedding only a part of the result corresponds to the output of the hashing, as originally defined in terms of the Toeplitz matrix only.
+
+
+\begin{example}
+We can use the example from before and try to embed the Toeplitz matrix T into a Circulant.
+
+\begin{equation}
+C_S\,X = \begin{pmatrix}
+S_O & S_3 & S_2 & S_1 	 \\
+S_1 & S_0 & S_3 & S_2 	 \\
+S_2 & S_1 & S_0 & S_3 	 \\
+S_3 & S_2 & S_1 & S_0
+\end{pmatrix}
+\begin{pmatrix}
+	X_0 \\
+	X_1 \\
+	X_2 \\
+	X_3
+\end{pmatrix}
+\end{equation}
+notice that $X_3$ needs to be padded as zero and the equations defined by the last two rows are exactly the output of the Toeplitz extractor as defined before by $T_S$. 
+\end{example}
+
+\section{Toeplitz Extractor - Full implementation}
+
+For completeness, we show a full implementation from the Cryptomite library \cite{Cryptomite}. They use a slightly different Toeplitz shift and embedding in their definition. This just allows them to extract the output as the first $m$ symbols, but this does not change the ideas exposed so far. 
+
+The full implementation of the \textbf{Toeplitz} extractor can be seen in the pseudo-code in Algorithm \ref{alg:toeplitz-impl}.
+\SetKwComment{Comment}{/* }{ */}
+\begin{algorithm}[h!]
+	\caption{Toeplitx strong extractor}
+	\label{alg:toeplitz-impl}
+	% ExtToeplitz$_{n,m}$}{$u, v$} 
+	$L \gets 2^{\text{floor}(\log_2(2n)+1)}$ \Comment*[r]{Calculate NTT size}
+	    $u'$ \Comment*[r]{of size $L$}
+	    $v'$ \Comment*[r]{of size $L$}
+	    \For{$i = 0 \dots m-1$} {
+		 $v'[i] \gets v[i]$
+	    }
+	    \For{$i = 0 \dots n-1$} {
+		 $u'[i] \gets u[i]$
+		 $v'[L - n + 1 + i] = v[m + i]$
+	    }
+	    $w \gets \text{conv}(u', v')$
+	    \Return first $m$ bits of $w$
+\end{algorithm}
+
 
 \section{Extended dual construction and seed reduction}
 
+
+\textbf{Modified Toeplitz Extractor}  To reduce the seed length, one can use modified Toeplitz matrices (Subsection $B-B$ in \cite{Hayashi}), which allow a reduction from $n + m - 1$ to $n - 1$. 
+In that paper, the authors expand on the theory of hash based strong extractors to allow for non-uniform seeds. This is quite important because in practice, even in the case of practical implementations using Quantum Random Number Generators, we can only guarantee the randomness of the seeds used up to a certain probability. The authors found that a penalty due to the non-uniformity of the seed is needed. As an additional result, they also improve the Toeplitz extractor construction to allow for smaller seeds. We will briefly review their algorithm, without proving the statements, which can be found in the paper. 
+
+\textcolor{red}{Explain the Hayashi-Tsurumaru modified Toeplitz extractor algorithm}
