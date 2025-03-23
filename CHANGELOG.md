@@ -4,8 +4,14 @@ This repository follows a SemVer versioning system.
 
 ## Unreleased
 
-## [0.0.2](https://github.com/marcocofano/qkd_reconciliation_lectures/releases/tag/0.0.2) - 2025-03-09
+### Added
 
+- First code for Error correction simulations, based on
+  [https://github.com/thadikari/ldpc_decoders](https://github.com/thadikari/ldpc_decoders), simulation, and structure
+  rewritten. Added jupyter notebook for classes
+- Slides for Master in Quantum science, QKD module
+
+## [0.0.2](https://github.com/marcocofano/qkd_reconciliation_lectures/releases/tag/0.0.2) - 2025-03-09
 
 ### Added
 

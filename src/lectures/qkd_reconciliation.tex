@@ -1,0 +1,61 @@
+
+% - Devetak - Winter formula
+% - Slepian Wolf coding
+%   - distributed coding
+%   - decoding with side information (separate encoder at source, decoder at target)
+%
+% DV QKD methods
+%
+% - Syndrome decoding
+%   - syndrome, errors and minimum distance
+%   - belief propagation decoder with syndromes
+%
+% CV QKD methods
+%
+% - multidimensional reconciliation - Leverrier thesis
+%
+% (optional)
+%
+% - multi stage coding multi layer decoding (MSC-MLD)
+% - slice reconciliation
+%
+% - efficiency f vs beta.
+%
+% - error correction verification steps
+%   - crc codes
+%   - using universal-2 hasing functions
+%   - adding error correction probability failures in composable security proofs
+%     - introduce composable framework
+%     - epsilon ec contribution from verification step and FER
+
+
+
+\chapter{QKD reconciliation}\label{chap:qkd_reconciliation}
+
+\section{Information reconciliation vs FEC}
+
+The usual context for error correction is the noisy channel communication. Alice and Bob know their communication channel has a noise characterized by some parameter $\epsilon$ and a Capacity $C(\epsilon)$. Alice wants to send messages to Bob and preemtively protects her messages adding some fixed information (at a rate at least H(X|Y)) that characterizes uniquely each message. The Shannon theorem tells us exactly that this scheme works in the asymptotic limit. 
+
+In other scenarios like QKD, Alice and Bob want to agree on some secret key. The message itself is random. Alice, Bob (and Eve, the attacker) share correlated data. According to the protocol chosen, either Bob tries to reconcile his data to Alice's (Direct reconciliation) or the other way around (Inverse Reconciliation). It is not immediate to see that, to do so Alice and Bob face a channel coding problem that is mathematically equivalent to the Forward Error correction one. The first to prove that reconciliation and FEC was mathematically equivalent, were Slepian and Wolf in their seminal paper (CITE). Although mathematically equivalent, the problem is practically different requiring a reliable classical communication channel to be applied to our case. The classical communication will be used to interactively exchange the needed additional information to guess the right message held by the other party. The amount of information needed to be exchanged is the same (a rate of H(X|Y)) as in the case of FEC, where this information was part of the original message sent. 
+
+
+reconciliation and syndrome decoding
+
+\section{Devetak Winter formula in QKD}
+direct vs inverse reconciliation
+
+\subsection{Finite error correction efficiencies}
+
+\section{Direct vs Inverse reconciliation examples}
+
+\subsection{Soft and Hard information}
+Spell out the case for DV and discrete modulations and CV?
+
+
+
+
+
+
+
+
+% chapter  (end)

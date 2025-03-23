@@ -1,0 +1,9 @@
+
+
+/* In styles.css or .slidev/theme/index.css */
+::v-deep .slidev-header {
+  margin-top: 0 !important;
+}
+::v-deep .slidev-slide__header h1 {
+  color: #FF0000 !important; /* Change to your desired color */
+}

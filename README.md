@@ -36,7 +36,7 @@ The lectures span several topics like
 
 ## Codes
 
-The folder codes contains sample scripts and libraries mentioned in the lecture content.
+The folder codes contains sample scripts and libraries mentioned in the lecture content. Refer to the [[codes/readme.md]] file to understand how to run them 
 
 ## Slides
 
