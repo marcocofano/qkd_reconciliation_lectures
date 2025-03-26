@@ -168,7 +168,7 @@ Now, we will compute the MAP decoder for a single parity check $C(n, n-1)$ code 
 
 The incoming bits (edges) have one constraint: $\sum^{x^{[m]}_i} = 0$. This means that the number of ones is even.
 
-The optimal guess for the only message bit is:
+The optimal guess for the message bits is:
 
 \begin{equation}
 	\hat{x}_1 = \arg \max P(x_1=b|y, \text{even number of 1s})
@@ -179,7 +179,7 @@ We can re arrange the formula and use Gallager theorem:
 \begin{eqnarray}
 	P(x_1=0|y, \text{even number of 1s}) &=& P(x_2, \dots x_n  \text{even number of 1s}| y) \nonumber \\
 	&=& \frac{1}{2}\left(1 + \prod_{l=2}^{k}(1 - 2P(x_l=1|y_l))\right) \nonumber \\
-	&=& P(x_1=1|y, \text{even number of 1s})
+	&=& 1 - P(x_1=1|y, \text{even number of 1s})
 \end{eqnarray}
 
 rearranging:
