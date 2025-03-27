@@ -23,14 +23,30 @@ mdc: true
 body ::deep .slidev-slide__header {
   margin-top: 0 !important;
 }
-h1 {
-  background-color: #2b90b6;
-  background-image: linear-gradient(45deg, #4ec5d4 10%, #146b8c 20%);
-  background-size: 100%;
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-text-fill-color: transparent;
+  h1 {
+  /* background-color: #2b90b6; */
+  /* background-image: linear-gradient(45deg, #4ec5d4 10%, #146b8c 20%); */
+  /* background-size: 100%; */
+  /* -webkit-background-clip: text; */
+  /* -moz-background-clip: text; */
+  /* -webkit-text-fill-color: transparent; */
+  /* -moz-text-fill-color: transparent; */
+  color: #2b90b6 !important; /* Or another color of your choice */
+}
+
+@media print {
+  .slidev-slide__header h1 {
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    -moz-background-clip: initial !important;
+    -webkit-text-fill-color: initial !important;
+    -moz-text-fill-color: initial !important;
+    color: #2b90b6 !important; /* Or another color of your choice */
+  }
+ .slidev-slide {
+    background-color: #0B0C0E !important; /* Dark background */
+    color: #E2E8F0 !important;            /* Light text color */
+  }
 }
 </style>
 
@@ -1045,22 +1061,20 @@ layout: two-cols-header
 ---
 
 ::header::
-# Bipolar representation
-
+# Log likelihood
 ::footer::
 
-Map $(0, 1) \rightarrow (1, -1)$
 
 $$
-P(Y=y | X = 0) = P(Y=y | \ddot{X} = 1)
+P(Y=y | X = 0) 
 $$
 
 <Definition title="Log-likelihood">
 
 $$
-L(X) = \ln\left(\frac{P(\ddot{X} = 1)}{P(\ddot{X} = -1)}\right), \;
+L(X) = \ln\left(\frac{P(X = 0)}{P(X = 1)}\right), \;
 
-L(X|Y) = \ln\left(\frac{P(\ddot{X} = 1|Y)}{P(\ddot{X} = -1|Y)}\right)
+L(X|Y) = \ln\left(\frac{P(X = 0|Y)}{P(X = 1|Y)}\right)
 $$
 
 </Definition>
@@ -1085,7 +1099,7 @@ layout: two-cols-header
 
 For the BSC of crossover probability $\epsilon$: 
 $$
-L(Y=y|X) = \ln\left(\frac{1-\epsilon}{\epsilon}\right) \ddot{y}
+L(Y=\ddot{y}|X) = \ln\left(\frac{1-\epsilon}{\epsilon}\right) \ddot{y}
 $$
 </Box>
 
@@ -1094,7 +1108,7 @@ $$
 
 From a BiAWGN channel with variance $\sigma^2$
 $$
-L(Y=y|X) = \ln \left(\frac{2}{\sigma^2}\right)\ddot{y}
+L(Y=\ddot{y}|X) = \left(\frac{2}{\sigma^2}\right)\ddot{y}
 $$
 </Box>
 
@@ -1107,59 +1121,25 @@ layout: two-cols-header
 ::header::
 # LLR examples
 
-::footer::
+::left::
 
 To convert back to probabilities:
 
 $$
-L(X) = \ln\left(\frac{P(\ddot{X} = 1)}{P(\ddot{X} = -1)}\right) \\ 
-e^{L(X)} = \frac{P(\ddot{X}=1)}{1-P(\ddot{X}=1)} \\
-P(\ddot{X} = \ddot{x}) = \frac{1}{1+e^{-\ddot{x}L(\ddot(X))}}
+L(X) = \ln\left(\frac{P(X = 0)}{P(X = 1)}\right) \\ 
+e^{L(X)} = \frac{P(X=0)}{1-P(X=0)} \\
+P(X = 0) = \frac{1}{1+e^{-L(X)}}\\
+P(X = 1) = \frac{1}{1+e^{L(X)}}
 $$
 
+::right::
 The expectation value of $\hat{x}$ in terms of the LLR:
 
 $$
-E(\ddot{x}) = P(\ddot{X}=1) - P(\ddot{X}=-1) \\ 
- =  1 - 2P(\ddot{X}=1) \\
- = \tanh\left(\frac{L(\ddot{X})}{2}\right)
+E(x) = P(X=0) - P(X=1) \\ 
+ =  1 - 2P(X=1) \\
+ = \tanh\left(\frac{L(X)}{2}\right)
 $$
----
-transition: fade-out
-layout: two-cols-header
----
-
-::header::
-# Belief propagation: VN update
-
-::left::
-
-- the messages coming from the check nodes update the LLR for each VN
-- a VN is like a repetition code of one bit. We send, repeated with uniform probability the same bit
-- LLRs update involve summing (Bayes rule with uniform prior).
-
-$$
-L(X|y) = L(y|X)
-= \sum_{i=1}^n \ln \left(\frac{P(y_i|X=0)}{P(y_i|X=1)}\right)
-= \sum_{i=1}^n L(y_i|X)
-$$
-
-- it can be argued then that the update rule is:
-
-$$
-\mu_{i \rightarrow j}^{(l)} = 
-L_i + \sum_{j' \in N(i)\setminus\{j\}} \mu_{j' \rightarrow i}^{(l)}.
-$$
-
-where the sum runs over all incident edges apart from the one under update
-
-::right::
-<img
-  class="w-100"
-  src="./img/VN_update.png"
-  alt="VN Update"
-  style="display: block; margin: 0 auto;"
-/>
 
 ---
 transition: fade-out
@@ -1234,6 +1214,46 @@ L(x_1|y, \text{even number of 1s}) =
 $$
 
 <img src="./img/CN_update.png" alt="CN update" class="w-100 block mx-auto">
+
+
+---
+transition: fade-out
+layout: two-cols-header
+---
+
+::header::
+# Belief propagation: VN update
+
+::left::
+
+- the messages coming from the check nodes update the LLR for each VN
+- a VN is like a repetition code of one bit. We send, repeated with uniform probability the same bit
+- LLRs update involve summing (Bayes rule with uniform prior).
+
+$$
+L(X|y) = L(y|X)
+= \sum_{i=1}^n \ln \left(\frac{P(y_i|X=0)}{P(y_i|X=1)}\right) \\
+= \sum_{i=1}^n L(y_i|X)
+$$
+
+- it can be argued then that the update rule is:
+
+$$
+\mu_{i \rightarrow j}^{(l)} = 
+L_i + \sum_{j' \in N(i)\setminus\{j\}} \mu_{j' \rightarrow i}^{(l)}.
+$$
+
+
+::right::
+<img
+  class="w-100"
+  src="./img/VN_update.png"
+  alt="VN Update"
+  style="display: block; margin: 0 auto;"
+/>
+
+- where the sum runs over all incident edges apart from the one under update
+
 
 ---
 transition: fade-out
@@ -1406,3 +1426,486 @@ layout: two-cols-header
 - Verification step, hash functions and $\epsilon$ security. Protocol is secure up to a certain small probability
 - Reverse reconciliation: It might be more efficient if Alice tries to guess Bob's data. 
 e.g. In CV - QKD with direct reconciliation DR cannot extract secure keys in a scenario where the losses in the channel are more that 3dB (15 km)
+
+
+  
+
+---
+transition: fade-out
+layout: two-cols-header
+---
+
+::header::
+# Privacy Amplification
+
+
+::left::
+A and B share a string (weak key) from a distribution P(X). Eve has some (quantum) side information. The qc-state is:
+
+$$
+\rho_{XE} = \sum_X p_x\ket{x} \bra{x} \otimes \rho^E_x
+$$
+
+<Box title="Goal">
+
+Alice and Bob, using the classical channel can achive the same string:
+
+- un-correlated with respect to  Eve's side information 
+- uniform over a subset of the original bits (as large as possible, given Eve's side information)
+
+</Box>
+  
+::right::
+
+<img src="./img/BB_PA.png">
+
+
+---
+transition: fade-out
+layout: two-cols-header
+---
+
+::header::
+# Randomness extraction
+
+<Definition title="Uniform and uncorrelated state">
+
+This state is our goal or ideal state for a randomness extraction.
+
+$$
+\rho^{ideal}_{XE} =
+\frac{1}{2^n}\mathbb{1}_X \otimes \rho_E
+$$
+
+</Definition>
+
+<Definition title="epsilon ignorance">
+
+We have a simple notion of measuring how far we get from this ideal:
+
+$$
+||\rho^{real}_{XE}, \rho^{ideal}_{XE}||_1 \le \epsilon
+$$
+
+</Definition>
+
+where $||.||_1$ is the Trace distance. 
+
+  
+---
+transition: fade-out
+layout: two-cols-header
+---
+
+::header::
+# No deterministic Randomness Extractors
+
+<Definition title="k-source">
+
+  A k-source is a qc-state of A classical state and E quantum state with side information on A such that:
+
+  $$
+  H_{\text{min}}(A|E) \ge k
+  $$
+
+</Definition>
+
+<Theorem title="No General Deterministic randomness extractors">
+
+  For any $Ext: \{0,1\}^n \rightarrow \{0, 1\}$ there exists an (n-1)-source X s.t Ext(X) is constant
+
+</Theorem>
+
+---
+transition: fade-out
+layout: two-cols-header
+---
+
+::header::
+# Seeded extractors 
+
+<Definition title="Weak (strong) seeded extractor">
+
+  A $(k,\epsilon)$-weak seeded extractor is a function:
+
+  $$
+  Ext: \{0,1\}^n x \{0,1\}^d  \rightarrow \{0,1\}^m 
+  $$
+
+  s.t. for any k-source $\rho_{XE}$
+
+$$
+||\rho_{Ext(A,S)E},\frac{1}{2^n}\mathbb{1}_X \otimes \rho_E
+ ||_1 \le \epsilon
+$$
+
+where S is uniform and not known to E.
+
+It is called a strong extractor if the seed is also known to the Evesdropper
+
+$$
+||\rho_{Ext(A,S)E},\frac{1}{2^n}\mathbb{1}_X \otimes \rho_{SE}
+ ||_1 \le \epsilon
+$$
+
+</Definition>
+
+---
+transition: fade-out
+layout: two-cols-header
+---
+
+::header::
+# Hashes as Seeded extractors 
+
+We use families of hash functions. We select one hash at random (seed).
+
+Desiderata:
+
+- large m (output)
+- small seed d
+- small $\epsilon$
+- extract $H_{min}(A|E)$
+
+select a linear combination of bits at random (parity bits) and share with Bob the positions (seed)
+
+$$d \sim m\,n$$
+
+
+---
+transition: fade-out
+layout: two-cols-header
+---
+
+::header::
+# 2-universal hash functions 
+
+::footer::
+
+<Definition title="2-universal hash function">
+
+$$
+\mathcal{F} = \{f: \{0,1\}^n \rightarrow \{0,1\}^m \}
+$$
+
+is 2-universal iff:
+
+for any $x \ne x^\prime$  and $z \ne z^\prime$  with $x,x^\prime \in \{0,1\}^n$ and $z,z^\prime \in \{0,1\}^m$
+
+$$
+P_{f \in \mathcal{F}}  \left\{ f(x) = z \land f(x^\prime) = z^\prime \right\} = \frac{1}{2^{2m}}
+$$
+
+</Definition>
+
+
+---
+transition: fade-out
+layout: two-cols-header
+---
+
+::header::
+# Leftover hashing Lemma
+
+::footer::
+
+<Theorem title="Leftover hashing lemma">
+
+Let n and $k \le n$   and arbitrary integer $\epsilon$
+
+The Extractor based on a 2-universal family of hash defined by:
+
+$$
+\mathcal{F} = \{f_d: \{0,1\}^n \rightarrow \{0,1\}^m \}
+$$
+
+with:
+
+$$ m = k - 2\;\log \frac{1}{\epsilon} $$
+is a $(k,\epsilon)$-strong seeded extractor
+
+</Theorem>
+
+
+---
+transition: fade-out
+layout: two-cols-header
+---
+
+::header::
+# Privacy Amplification Implementation
+
+Given that strong seeded extractors allow for the seed to be disclosed we use it to interactively choose the same hash in Alice and Bob
+
+Things to consider for a secure and stable implementation
+
+- Compuitational time
+- Short seeds
+- Constant time operations
+- Numerical stability
+
+[Cryptomite - randomness extraction](https://github.com/CQCL/cryptomite) - Great tool for research in randomness estraction and benchmarking (not extremely fast, python, but quite extensive)
+
+
+---
+transition: fade-out
+layout: two-cols-header
+---
+
+::header::
+# Toeplitz matrices 
+
+<Definition title="Toeplitz matrix from seed">
+
+Given a seed vector \( s \) of length \( d \):
+
+$$
+s = [s_0, s_1, s_2, \dots, s_{d-1}]
+$$
+
+we define the $m \times n$ Toeplitz matrix $T_s$, with $d = m + n - 1$, as follows:
+
+$$
+T_s =
+\begin{pmatrix}
+s_{n-1} & s_{n-2} & s_{n-3} & \dots & s_0 \\
+s_{n} & s_{n-1} & s_{n-2} & \dots & s_{1} \\
+s_{n+1} & s_{n} & s_{n-1} & \dots & s_{2} \\
+\vdots & \vdots & \vdots & \ddots & \vdots \\
+s_{n+m-2} & s_{n+m-3} & s_{n+m-4} & \dots & s_{m-1}
+\end{pmatrix}
+$$
+
+</Definition>
+
+Formally, each entry is defined as:
+
+$$
+(T_s)_{i,j} = s_{n - 1 + i - j}
+$$
+
+
+---
+transition: fade-out
+layout: two-cols-header
+---
+
+::header::
+# Toeplitz matrices - Example
+
+::footer::
+
+<Box title="Example Toeplitz">
+
+- Input vector $X$ of length $n = 3$: $X = [x_0, x_1, x_2]^T$.
+- Seed vector $S$ of length $d = n + m - 1 = 4$: $S = [s_0, s_1, s_2, s_3]$.
+- Output vector length $ m = 2 $.
+
+The Toeplitz matrix constructed from the seed $ S $ is given by:
+
+$$
+T_S = \begin{pmatrix}
+s_2 & s_1 & s_0 \\
+s_3 & s_2 & s_1
+\end{pmatrix}
+$$
+
+Then, the output vector $Y$ produced by the Toeplitz extractor is:
+
+$$
+Y = T_S \cdot X =
+\begin{pmatrix}
+s_2 & s_1 & s_0 \\
+s_3 & s_2 & s_1
+\end{pmatrix}
+\begin{pmatrix}
+x_0 \\ x_1 \\ x_2
+\end{pmatrix} =
+\begin{pmatrix}
+s_2 x_0 + s_1 x_1 + s_0 x_2 \\
+s_3 x_0 + s_2 x_1 + s_1 x_2
+\end{pmatrix}
+$$
+
+</Box>
+
+---
+transition: fade-out
+layout: two-cols-header
+---
+
+::header::
+# Toeplitz Extractor
+
+
+<Definition title="Toeplitz extractor">
+
+The Toeplitz extractor $T(X, S) : {0,1}^n \times {0,1}^{n+m-1} \rightarrow {0,1}^{m}$ is built from a seed $S = (S_0, \dots, S_{n+m-2})$. Given the weak input $X = (x_0, \dots, x_n)$ we can extract  $Y = (y_0, \dots, y_{m-1})$ by:
+
+$$
+	Y = T(X,S) = T_S\,X
+$$
+
+</Definition>
+
+<Theorem title="Toeplitz strong seeded extractor">
+
+The Toeplitz extractor is a strong classical and quantum $(k, n+m-1, \epsilon, n, m)$-seeded randomness extractor, where:
+
+$$
+	m \le k - 2\, \log_2\left(\frac{1}{\epsilon}\right)
+$$
+
+</Theorem>
+
+
+
+---
+transition: fade-out
+layout: two-cols-header
+---
+
+::header::
+# Toeplitz Extractor - implementation complexity
+
+- It requires in principle $O(n\;m)$ operations, to compute the matrix vector multiplication.
+- We can speed up this calculations to $O(n\, \log(n))$
+
+We need to first realize the relation between Toeplitz matrices and convolutions.
+
+For the previous example:
+
+$$
+T_S \cdot X = (X * [s_3, s_2, s_1, s_0])_{[2:3]}.
+$$
+
+
+
+---
+transition: fade-out
+layout: two-cols-header
+---
+
+::header::
+
+# FFT Toepliz matrix multiplication with circulant embeddings
+
+<Definition title="Circulant">
+
+A circulant nmatrix $C$ generated from a vector $c = [c_0, c_1, c_2, \dots, c_{n-1}]$ is defined as:
+
+$$
+C = \begin{pmatrix}
+	c_0 & c_{n-1} & c_{n-2} & \dots & c_1 \\
+	c_1 & c_0 & c_{n-1} & \dots & c_2 \\
+	c_2 & c_1 & c_0 & \dots & c_3 \\
+	\vdots & \vdots & \vdots & \ddots & \vdots \\
+	c_{n-1} & c_{n-2} & c_{n-3} & \dots & c_0
+\end{pmatrix}
+$$
+
+Each row is a circular shift of the preceding row.
+
+</Definition>
+
+---
+transition: fade-out
+layout: two-cols-header
+---
+
+::header::
+
+# FFT Toepliz matrix multiplication with circulant embeddings
+
+::footer::
+
+Multiplication of a circulant matrix $C$ by a vector $x$ corresponds exactly to the $$\textbf{circular convolution}$$ $ c \circledast x $. 
+
+Specifically:
+
+$$
+(Cx)_k = (c \circledast x)_k = 
+\sum_{j=0}^{n-1} c_j \, x_{(k - j) \bmod n}
+$$
+
+---
+transition: fade-out
+layout: two-cols-header
+---
+
+::header::
+
+# FFT Toepliz matrix multiplication with circulant embeddings
+
+Circulant and the FFT. 
+
+As usual if you want to compute the convolution it is best to go to Fourier space
+
+- Compute the FFTs of vectors $c$ and $x$:
+$$
+C(\omega) = \text{FFT}(c), \quad X(\omega) = \text{FFT}(x)
+$$
+
+- Multiply these transforms element-wise:
+$$
+Y(\omega) = C(\omega) \cdot X(\omega)
+$$
+
+- Compute the inverse FFT:
+$$
+y = \text{FFT}^{-1}(Y(\omega))
+$$
+
+The vector $y$ obtained is exactly $c \circledast x$.
+
+
+---
+transition: fade-out
+layout: two-cols-header
+---
+
+::header::
+
+# Algebraic point of view of Circulants and FFT
+
+Denote $F_{ij} = w_{ij}$ the matrix representation of the DFT, where $w_{ij}$ are the primitive root of unity. 
+
+One can show that $F$ is exactly the Unitary matrix that diagonalizes $C$:
+
+$$
+	F\,C\,F^{-1} = \text{diag}(F\,S)
+$$
+
+so that the components of the DFT of the seed are the eigenvalues of C.
+
+from here one can rearrange the last equation:
+
+$$
+Y = F^{-1} (\,\text{diag}(FS) \,FX)
+$$
+
+which is what we used before.
+
+
+So, the steps to follow to efficiently compute the Toeplitz hashing are:
+
+---
+transition: fade-out
+layout: two-cols-header
+---
+
+::header::
+
+# Toeplitz Hashing
+
+
+-  Given Toeplitz matrix $T$ of size $m \times n$, embed it into a circulant matrix of size $n+m-1$ (or typically the next power-of-two).
+-  Pad both input vectors (seed and data) with zeros to match this size.
+-  Perform circular convolution via FFT and extract relevant components from the resulting vector.
+
+
+
+The computational complexity reduces from $O(mn)$ to $O((n) \log (n))$.
+
+This is due to the fact that computing the FFT or its inverse can be achieved in $O(n\,\log(n))$, while the scalar multiplication between the vector in Fourier space has a complexity of just $O(n)$.
+
