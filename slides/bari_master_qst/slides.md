@@ -1401,8 +1401,8 @@ layout: two-cols-header
 
 # Further knowledge
 
-- According to a QBER, we choose a fixed mºatrix with a certain code rate = certain gap to capacity (efficiency) 
+- According to a QBER, we choose a fixed matrix with a certain code rate = certain gap to capacity (efficiency) 
 - If the channel QBER is not stable or we do not have enough matrices: adaptive EC, puncturing-shortening
-- Verification step, hash functions and $\epsilon$ security. Protocol is not secure up to a certain small probability
+- Verification step, hash functions and $\epsilon$ security. Protocol is secure up to a certain small probability
 - Reverse reconciliation: It might be more efficient if Alice tries to guess Bob's data. 
 e.g. In CV - QKD with direct reconciliation DR cannot extract secure keys in a scenario where the losses in the channel are more that 3dB (15 km)
