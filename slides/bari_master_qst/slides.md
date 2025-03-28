@@ -1635,6 +1635,8 @@ layout: two-cols-header
 ::header::
 # Privacy Amplification Implementation
 
+::left::
+
 Given that strong seeded extractors allow for the seed to be disclosed we use it to interactively choose the same hash in Alice and Bob
 
 Things to consider for a secure and stable implementation
@@ -1819,7 +1821,9 @@ layout: two-cols-header
 
 ::footer::
 
-Multiplication of a circulant matrix $C$ by a vector $x$ corresponds exactly to the $$\textbf{circular convolution}$$ $ c \circledast x $. 
+Multiplication of a circulant matrix $C$ by a vector $x$ corresponds exactly to the $\textbf{circular convolution}$ 
+
+$$c \circledast x$$ 
 
 Specifically:
 
@@ -1908,4 +1912,54 @@ layout: two-cols-header
 The computational complexity reduces from $O(mn)$ to $O((n) \log (n))$.
 
 This is due to the fact that computing the FFT or its inverse can be achieved in $O(n\,\log(n))$, while the scalar multiplication between the vector in Fourier space has a complexity of just $O(n)$.
+
+
+---
+transition: fade-out
+layout: two-cols-header
+---
+
+::header::
+
+# Modified Toeplitz method
+
+[Hayashi and Tsurumaru](https://arxiv.org/abs/1311.5322) found a modification of Toeplitz hashing and proved the leftover hashing lemma for those hashes:
+
+- Including two sources. This can also be seen as including in the LHL a penalty for the seed not being completely random (another $\epsilon_s$) 
+- Reduced seed length from $n+m-1 \rightarrow n-1$
+
+
+
+
+::notes::
+M. Hayashi and T. Tsurumaru, More Efficient Privacy Amplification With Less Random Seeds via Dual Universal Hash Function, IEEE Transactions on Information Theory, 10.1109/TIT.2016.2526018.
+
+
+---
+transition: fade-out
+layout: two-cols-header
+---
+
+::header::
+
+# Modified Toeplitz method
+
+- Build a toeplitz matrix from the original one: $G_{(m,n)} = [I_m | T_{(m, n-m)}]$
+
+$$
+Y_m = G{(m,n)} X_n \\
+= [I_{(m,x)}|T_{(m, n-m)}] 
+\begin{bmatrix} X_m \\ X_{(n-m)} \end{bmatrix} \\
+= I_{(m,m)} X_m \oplus T_{(m,n-m)}X_{n-m} \\
+= X_m \oplus Y'_m
+$$
+
+Now, the seed to define the toeplitz matrix T has length:
+
+$$
+(n-m) + m - 1 = n-1
+$$
+::notes::
+M. Hayashi and T. Tsurumaru, More Efficient Privacy Amplification With Less Random Seeds via Dual Universal Hash Function, IEEE Transactions on Information Theory, 10.1109/TIT.2016.2526018.
+
 
