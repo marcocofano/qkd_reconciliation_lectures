@@ -4,7 +4,7 @@ title: Practical Error Correction and Privacy Amplification
 subtitle: Marco Cofano - Head of Software LuxQuanta Technologies S.L. 
 info: "" 
 class: text-center
-backgroundImg: /portal.png
+backgroundImg: ./portal.png
 drawings:
   persist: false
 transition: slide-left
