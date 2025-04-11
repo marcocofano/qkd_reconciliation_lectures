@@ -3,14 +3,17 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "slidev build",
     "dev": "slidev --open",
-    "export": "slidev export"
+    "dev:master_bari": "slidev decks/master_bari/slides.md --open",
+    "build:master_bari ": "slidev build decks/master_bari/slides.md --open",
+    "export:master_bari": "slidev export decks/master_bari/slides.md"
   },
   "dependencies": {
     "@slidev/cli": "^0.49.29",
+    "@slidev/client": "^51.5.0",
     "@slidev/theme-default": "latest",
     "@slidev/theme-seriph": "latest",
+    "antfu": "^0.0.0",
     "vue": "^3.4.38"
   },
   "devDependencies": {

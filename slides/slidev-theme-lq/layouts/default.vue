@@ -2,7 +2,7 @@
   Usage:
 ```md
 ---
-layout: two-cols-header
+layout: lq_default 
 ---
 This shows up across both
 ::left::
@@ -25,7 +25,7 @@ const props = defineProps({
 
 <template>
   <div class="absolute top-2 text-xs text-#146b8c w-full text-center">
-    <img src="../img/LQ_logo.png" alt="LuxQuanta Technologies S.L." class="w-25 inline-block"/>
+    <img src="/LQ_logo.png" alt="LuxQuanta Technologies S.L." class="w-25 inline-block"/>
   </div>
   <div class="slidev-layout two-cols-with-full w-full h-full space-y-4">
     <!-- Optional header slot (full width) -->

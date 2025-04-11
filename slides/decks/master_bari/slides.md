@@ -1,59 +1,17 @@
 ---
-# You can also start simply with 'default'
-theme: default
-# random image from a curated Unsplash collection by Anthony
-# like them? see https://unsplash.com/collections/94734566/slidev
-background: './img/portal.png' #https://cover.sli.dev
-# some information about your slides (markdown enabled)
+theme: ../../slidev-theme-lq
 title: Practical Error Correction and Privacy Amplification
-info: |
-  ## A deck of slides about postprocessing in QKD and practical AC and PA steps
-# apply unocss classes to the current slide
+subtitle: Marco Cofano - Head of Software LuxQuanta Technologies S.L. 
+info: "" 
 class: text-center
-# https://sli.dev/features/drawing
+backgroundImg: /portal.png
 drawings:
   persist: false
-# slide transition: https://sli.dev/guide/animations.html#slide-transitions
 transition: slide-left
 # enable MDC Syntax: https://sli.dev/features/mdc
 mdc: true
+layout: cover
 ---
-
-<style>
-body ::deep .slidev-slide__header {
-  margin-top: 0 !important;
-}
-  h1 {
-  /* background-color: #2b90b6; */
-  /* background-image: linear-gradient(45deg, #4ec5d4 10%, #146b8c 20%); */
-  /* background-size: 100%; */
-  /* -webkit-background-clip: text; */
-  /* -moz-background-clip: text; */
-  /* -webkit-text-fill-color: transparent; */
-  /* -moz-text-fill-color: transparent; */
-  color: #2b90b6 !important; /* Or another color of your choice */
-}
-
-@media print {
-  .slidev-slide__header h1 {
-    background: none !important;
-    -webkit-background-clip: initial !important;
-    -moz-background-clip: initial !important;
-    -webkit-text-fill-color: initial !important;
-    -moz-text-fill-color: initial !important;
-    color: #2b90b6 !important; /* Or another color of your choice */
-  }
- .slidev-slide {
-    background-color: #0B0C0E !important; /* Dark background */
-    color: #E2E8F0 !important;            /* Light text color */
-  }
-}
-</style>
-
-# Practical Error Correction and Privacy Amplification
-
-#### Marco Cofano - Head of Software LuxQuanta Technologies S.L.
-
 
 <div class="pt-12">
   <span @click="$slidev.nav.next" class="px-2 py-1 rounded cursor-pointer" hover="bg-white bg-opacity-10">
@@ -77,7 +35,6 @@ The last comment block of each slide will be treated as slide notes. It will be 
 
 ---
 transition: fade-out
-layout: two-cols-header
 ---
 
 ::header::
@@ -95,12 +52,12 @@ Symmetric randomness extraction to eliminate any remaining Side information Eve 
 </v-clicks>
 ::right::
 
-<img src="./img/reconciliation_intro.png"> 
-</img>
+![Reconciliation Intro](/reconciliation_intro.png)
+<!-- <img src="/reconciliation_intro.png" alt="Reconciliation Intro">  -->
+<!-- </img> -->
 
 ---
 transition: fade-out
-layout: two-cols-header
 ---
 
 ::header::
@@ -120,7 +77,7 @@ layout: two-cols-header
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -145,7 +102,7 @@ $$
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -158,7 +115,7 @@ layout: two-cols-header
 </Box>
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -197,13 +154,13 @@ $$
 
 ::right::
 
-<img src="./img/reconciliation_intro.png"> 
+<img src="/reconciliation_intro.png"> 
 </img>
 
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -218,9 +175,9 @@ Two scenarios:
 
 <img
   class="w-200"
-  src="./img/channel.png"
+  src="/channel.png"
   alt="channel"
-  style="display: block; margin: 0 auto;"
+  style="display: block; margin: 1 auto;"
 />
 
 In both cases the goal is to have, after some procedure, the same string. 
@@ -244,7 +201,7 @@ If they have a certain number of bits that we can use, how many of those do they
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -255,7 +212,7 @@ layout: two-cols-header
 The channel is characterized by the transition probability $P(B|A)$.
 
 BSC channel: 
-<img src="./img/bsc.png" class="block mx-auto"/>
+<img src="/bsc.png" class="block mx-auto"/>
 
 
 The transition probability is 
@@ -270,7 +227,7 @@ $$
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -306,7 +263,7 @@ in particular if $|C| = |\mathbb{F}|^{m}$, then: $R=\frac{m}{n}$
       
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -316,7 +273,7 @@ layout: two-cols-header
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -351,7 +308,7 @@ If all codewords are equally likely the Maximum a posteriori decoder (MAP) is eq
 </v-click>
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -388,7 +345,7 @@ $$
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -441,7 +398,7 @@ $$
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -469,7 +426,7 @@ The probability of error is always bounded away from zero!
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -506,7 +463,7 @@ $$
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -527,7 +484,7 @@ They are maximally distanced so that one error can be corrected.
 <div class="text-center">
 <img
 class="w-120 opacity-90"
-src="./img/repetition.png"
+src="/repetition.png"
 alt="Repetition codes"
 />
 </div>
@@ -535,7 +492,7 @@ alt="Repetition codes"
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -567,14 +524,14 @@ $$
 <div class="text-center">
 <img
 class="w-120 opacity-90"
-src="./img/repetition.png"
+src="/repetition.png"
 alt="Repetition codes"
 />
 </div>
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -610,7 +567,7 @@ $$
 
 <img
 class="w-80 opacity-90"
-src="./img/hamming.png"
+src="/hamming.png"
 alt="Hamming"
 />
 
@@ -630,7 +587,7 @@ $$
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 
@@ -649,7 +606,7 @@ $$s = 2^k - k - 1$$
 <div style="display: flex; justify-content: flex-end;">
 <img
 class="w-80 opacity-90"
-src="./img/hamming.png"
+src="/hamming.png"
 alt="Hamming"
 />
 </div>
@@ -657,7 +614,7 @@ alt="Hamming"
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -680,7 +637,7 @@ The (Hamming) distance between two codewords is the number of elements in which 
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -707,7 +664,7 @@ whose kernel, $\ker H = \{x \in \mathbb{F}^n_q: H x^T = 0\}$  is C is called a c
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -736,7 +693,7 @@ $$
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -748,7 +705,7 @@ layout: two-cols-header
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -795,7 +752,7 @@ Richardson, Thomas J, and Rüdiger L Urbanke. “Efficient Encoding of Low-Densi
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -836,7 +793,7 @@ Non idealities wrt Shannon Theorem.
   
 <img
 class="w-180"
-src="./img/performance.png"
+src="/performance.png"
 alt="Hamming"
 />
 
@@ -844,7 +801,7 @@ alt="Hamming"
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -881,7 +838,7 @@ Tanner graph
 <v-click>
 <img
 class="w-70"
-src="./img/tanner.png"
+src="/tanner.png"
 alt="Hamming"
 />
 
@@ -889,7 +846,7 @@ alt="Hamming"
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -917,7 +874,7 @@ $$
 <v-click>
 
 $$
-R = \frac{n - k}{n} =  \frac{7 - 3}{7} = \frac{3}{4}
+R = \frac{n - k}{n} =  \frac{7 - 3}{7} = \frac{4}{7}
 $$
 
 - degree of CN = $[4, 4, 4]$
@@ -928,13 +885,13 @@ $$
 ::right::
 <img
 class="w-120 block mx-auto opacity-150"
-src="./img/tanner_hamming.png"
+src="/tanner_hamming.png"
 alt="Hamming Tanner Graph"
 />
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -983,7 +940,7 @@ $$
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -1013,7 +970,7 @@ Gallager, R. “Low-Density Parity-Check Codes.” IRE Transactions on Informati
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -1044,7 +1001,7 @@ What is $P(B|A = 1)$ compared to $P(B|A=0)$? This will be our message that we se
 
 <img
 class="w-120 block mx-auto opacity-150"
-src="./img/tanner_hamming.png"
+src="/tanner_hamming.png"
 alt="Hamming Tanner Graph"
 />
 
@@ -1057,7 +1014,7 @@ alt="Hamming Tanner Graph"
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -1088,7 +1045,7 @@ $$
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -1115,7 +1072,7 @@ $$
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -1143,7 +1100,7 @@ $$
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -1165,7 +1122,7 @@ $$
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -1198,7 +1155,7 @@ $$
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -1213,12 +1170,12 @@ L(x_1|y, \text{even number of 1s}) =
 2\tanh^{-1} \left(\prod_{l=2}^n\tanh\left( \frac{L(x_l|y_l)}{2}\right)\right)
 $$
 
-<img src="./img/CN_update.png" alt="CN update" class="w-100 block mx-auto">
+<img src="/CN_update.png" alt="CN update" class="w-100 block mx-auto">
 
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -1247,7 +1204,7 @@ $$
 ::right::
 <img
   class="w-100"
-  src="./img/VN_update.png"
+  src="/VN_update.png"
   alt="VN Update"
   style="display: block; margin: 0 auto;"
 />
@@ -1257,7 +1214,7 @@ $$
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -1280,7 +1237,7 @@ $$
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -1342,7 +1299,7 @@ $$
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -1361,7 +1318,7 @@ Hint: normal SPA decoding is basically syndrome decoding to the all zero syndrom
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -1384,7 +1341,7 @@ This amounts to do Syndrome Decoding instead of adding parity bits and decode to
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -1414,7 +1371,7 @@ While computing updates of the messages, the decoders eventually meets some node
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -1428,11 +1385,128 @@ layout: two-cols-header
 e.g. In CV - QKD with direct reconciliation DR cannot extract secure keys in a scenario where the losses in the channel are more that 3dB (15 km)
 
 
-  
 
 ---
 transition: fade-out
-layout: two-cols-header
+
+---
+
+::header::
+
+# Reconciliation vs lossy channel in DV
+
+::left::
+
+Quantum channel model:
+
+$$y = x \oplus z$$
+the z noise (QBER) is straightforward modeled as a BSC.
+
+1. compute the syndrome s on x and decode y to s
+2. generate a random $u \in \mathcal{C}$, i.e. $Hu=0$ and modulate x and send the result to Y. 
+
+$$\alpha = u \oplus x$$
+
+Y uses its data, y to build a virtual received lossy version of the input u: 
+$$\alpha \oplus y = u \oplus x \oplus y = u \oplus z$$ 
+
+::right::
+
+
+![BSC](/bsc.png)
+
+So it is equivalent to a virtual classical lossy (BSC) channel where the noise is the same as the original Quantum QBER, z
+
+if u is chosen random (in the code $\mathcal{C}$) $\alpha$ is leaking the same amount of info as the syndrome
+
+
+---
+transition: fade-out
+
+---
+
+::header::
+
+# Gaussian Modulation
+
+::left::
+
+in CV we can do something similar using a BiAWGN with $SNR = s$ channel instead of BSC. 
+
+
+For gaussian mod. The Quantum Channel model is the linear:
+
+$$Y = X + Z \qquad \text{where} \qquad Z \sim \mathcal{N}(0, \frac{1}{s})  $$
+Technical Problems:
+1. states needs to be uniform (they are gaussian)
+2. the code needs to be a good partition of the total space
+
+Solution: 
+We can use the sign as information and the modulus as side information and transform the virtual channel to a BiAWGN. (i.e. use spherical codes where the inputs are uniform)
+
+::right::
+
+![BiAWGN](/biawgn.png)
+
+<div class="text-center">
+<img src="/CV_states.png" class="w-80" style="display: block; margin: 0 auto;">
+</div>
+
+
+---
+transition: fade-out
+---
+
+
+::header::
+
+# Multidimensional Reconciliation
+
+::left::
+
+Real channel 
+$$
+V_B = \frac{T\eta}{2} V_A + \frac{\epsilon}{2} + \nu_{\text{elec}} + 1
+$$
+
+$$
+y = x + n  \qquad \text{where} \qquad y, x \; \text{gaussian} \\
+$$
+
+Virtual channel, generate random  input $u \in \{-1, 1\}$
+
+$$
+u \rightarrow u^\prime = u + n^\prime \\
+$$
+
+how are the two noises $n$ and $n^\prime$ related?
+
+$$
+\alpha = u \,x \quad \text{sent into classical channel}\\ 
+u^\prime = \alpha y^{-1} = u x y^{-1} \\
+= u (y - n)y^{-1} 
+= u - \frac{u}{y} \,n
+$$
+
+::right::
+
+Y knows the amplitude of Y so it can renormalize it symbol by symbol. 
+
+This can be done in certain dimensions, i.e. we group symbols in sets and perform multiplications and division in the algebras of:
+
+(1: real,  2: complex, 4: quaternions, 8: octonions)
+
+
+The noise of the virtual channel is still gaussian, with a small change due to the dimensionality of the space used.
+
+$$
+n  \sim \mathcal{N}(0, \sigma^2) \\
+n^\prime  \sim \mathcal{N}(0, \frac{\sigma^2}{d})\\
+$$
+
+---
+transition: fade-out
+
 ---
 
 ::header::
@@ -1457,12 +1531,12 @@ Alice and Bob, using the classical channel can achive the same string:
   
 ::right::
 
-<img src="./img/BB_PA.png">
+<img src="/BB_PA.png">
 
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -1494,7 +1568,7 @@ where $||.||_1$ is the Trace distance.
   
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -1518,7 +1592,7 @@ layout: two-cols-header
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -1552,7 +1626,7 @@ $$
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -1574,7 +1648,7 @@ $$d \sim m\,n$$
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -1601,7 +1675,7 @@ $$
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -1629,7 +1703,7 @@ is a $(k,\epsilon)$-strong seeded extractor
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -1651,7 +1725,7 @@ Things to consider for a secure and stable implementation
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -1689,7 +1763,7 @@ $$
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -1733,7 +1807,7 @@ $$
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -1764,7 +1838,7 @@ $$
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -1785,7 +1859,7 @@ $$
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -1812,7 +1886,7 @@ Each row is a circular shift of the preceding row.
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -1834,7 +1908,7 @@ $$
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -1865,7 +1939,7 @@ The vector $y$ obtained is exactly $c \circledast x$.
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -1895,7 +1969,7 @@ So, the steps to follow to efficiently compute the Toeplitz hashing are:
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -1916,7 +1990,7 @@ This is due to the fact that computing the FFT or its inverse can be achieved in
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -1937,7 +2011,7 @@ M. Hayashi and T. Tsurumaru, More Efficient Privacy Amplification With Less Rand
 
 ---
 transition: fade-out
-layout: two-cols-header
+
 ---
 
 ::header::
@@ -1962,4 +2036,15 @@ $$
 ::notes::
 M. Hayashi and T. Tsurumaru, More Efficient Privacy Amplification With Less Random Seeds via Dual Universal Hash Function, IEEE Transactions on Information Theory, 10.1109/TIT.2016.2526018.
 
+
+---
+transition: fade-out
+
+---
+
+::header::
+
+# LuxQuanta's opportunities
+
+- 
 
