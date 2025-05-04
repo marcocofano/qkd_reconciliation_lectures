@@ -2,12 +2,15 @@
 
 ![Build Status](https://github.com/marcocofano/qkd_reconciliation_lectures/actions/workflows/main.yml/badge.svg)
 
-A series of lectures on the reconciliation of QKD.
+A series of lectures and slides on the reconciliation of QKD.
 
 > [!NOTE] This series of lectures are a work in progress. Please refer to this readme the changelog and the release
 > notes for updates on its status
 
-The lectures span several topics like
+You can find the notes and slides at the following:
+
+- ![Lecture notes](https://github.com/marcocofano/qkd_reconciliation_lectures/releases)
+- ![Slides](https://marcocofano.github.io/qkd_reconciliation_lectures/1) The lectures span several topics like
 
 - Shannon theory of communication
 - Modern error correction, Low Density Parity Check Codes, Decoding and Encoding
@@ -36,7 +39,8 @@ The lectures span several topics like
 
 ## Codes
 
-The folder codes contains sample scripts and libraries mentioned in the lecture content. Refer to the [[codes/readme.md]] file to understand how to run them 
+The folder codes contains sample scripts and libraries mentioned in the lecture content. Refer to the
+[[codes/readme.md]] file to understand how to run them
 
 ## Slides
 
