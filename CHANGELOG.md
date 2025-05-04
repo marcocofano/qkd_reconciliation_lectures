@@ -4,6 +4,9 @@ This repository follows a SemVer versioning system.
 
 ## Unreleased
 
+## [0.0.3](https://github.com/marcocofano/qkd_reconciliation_lectures/releases/tag/0.0.3) - 2025-05-04
+
+
 ### Added
 
 - First code for Error correction simulations, based on
