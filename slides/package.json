@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev:slides": "slidev decks/slides.md --open",
-    "build:master_bari": "slidev build decks/slides.md --base /qkd_reconciliation_lectures/",
-    "export:master_bari": "slidev export decks/slides.md"
+    "build:slides": "slidev build decks/slides.md --base /qkd_reconciliation_lectures/",
+    "export:slides": "slidev export decks/slides.md"
   },
   "dependencies": {
     "@slidev/cli": "^0.49.29",

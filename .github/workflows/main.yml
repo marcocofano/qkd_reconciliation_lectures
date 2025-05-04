@@ -62,18 +62,18 @@ jobs:
           node-version: '16'  # adjust as needed
 
       - name: Install Slidev dependencies
-        working-directory: slides/bari_master_qst
+        working-directory: slides/
         run: npm install
 
       - name: Build Slidev export
-        working-directory: slides/bari_master_qst
+        working-directory: slides/
         run: npx slidev export
 
       - name: Upload Slidev export artifact
         uses: actions/upload-artifact@v4
         with:
           name: Slidev-Export
-          path: slides/bari_master_qst/dist
+          path: slides/dist
 
   release:
     name: Create Release
@@ -117,6 +117,7 @@ jobs:
         name: "Release ${{ env.VERSION }}"
         body_path: ${{ github.workspace }}-RELEASE_NOTES.md
         files: |
-          "output.pdf"
-          slides/bari_master_qst/dist
+          "QKD_reconciliation_lectures.pdf"
+          "slides-export.pdf"
+
 
