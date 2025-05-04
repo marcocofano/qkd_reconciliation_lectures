@@ -9,8 +9,10 @@ A series of lectures and slides on the reconciliation of QKD.
 
 You can find the notes and slides at the following:
 
-- ![Lecture notes](https://github.com/marcocofano/qkd_reconciliation_lectures/releases)
-- ![Slides](https://marcocofano.github.io/qkd_reconciliation_lectures/1) The lectures span several topics like
+- [Lecture notes](https://github.com/marcocofano/qkd_reconciliation_lectures/releases)
+- [Slides](https://marcocofano.github.io/qkd_reconciliation_lectures/1)
+
+The lectures span several topics like
 
 - Shannon theory of communication
 - Modern error correction, Low Density Parity Check Codes, Decoding and Encoding
