@@ -35,7 +35,7 @@ jobs:
 
       - name: Build
         working-directory: slides
-        run: nr build:master_bari
+        run: nr build:slides
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
