@@ -42,7 +42,7 @@ jobs:
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: slides/decks/master_bari/dist
+          path: slides/decks/dist
 
   deploy:
     environment:

@@ -46,7 +46,34 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Compiled-PDF
-          path: output.pdf
+          path: QKD_reconciliation_lectures.pdf
+
+  build-slidev:
+    name: Build Slidev Export Artifact
+    if: "!contains(github.event.head_commit.message, 'chore(release)')"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'  # adjust as needed
+
+      - name: Install Slidev dependencies
+        working-directory: slides/bari_master_qst
+        run: npm install
+
+      - name: Build Slidev export
+        working-directory: slides/bari_master_qst
+        run: npx slidev export
+
+      - name: Upload Slidev export artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Slidev-Export
+          path: slides/bari_master_qst/dist
 
   release:
     name: Create Release
@@ -67,6 +94,12 @@ jobs:
         name: Compiled-PDF
         path: ./
 
+    - name: Download Slidev export artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: Slidev-Export
+        path: ./
+
     - name: Get Version from TAG
       run: |
         echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
@@ -83,4 +116,7 @@ jobs:
         tag_name: ${{ github.ref_name }}
         name: "Release ${{ env.VERSION }}"
         body_path: ${{ github.workspace }}-RELEASE_NOTES.md
-        files: "output.pdf"
+        files: |
+          "output.pdf"
+          slides/bari_master_qst/dist
+
